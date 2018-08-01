@@ -1,0 +1,158 @@
+<!DOCTYPE html><!--[if lt IE 7]>      <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <title>Rust Syntax Highlighting in Vim &mdash; Taylor Fahlman</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" href="../../../_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        <link rel="next" title="Enable Rust on OSU Servers" href="../17/enable_rust_on_osu_servers.html" /><link rel="prev" title="Devlog" href="../../../2016/09/06/devlog.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Scroll to content if on small screen
+            if (screen.width < 480)
+            {
+                $(document).scrollTop(document.getElementsByTagName("article")[0].offsetTop - 44);
+            }
+        });
+    </script></head>
+    <body role="document">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+      <div id="container"><header role="banner">
+            <hgroup>
+              <h1><a href="../../../index.html">Taylor Fahlman</a></h1></hgroup>
+          </header>
+      <nav role="navigation">
+            <ul><li class="main-nav">
+                  <a href="../../../index.html">Home</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/about.html">About</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/subdomains.html">Subdomains</a>
+                </li>
+              </ul>
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>November 20, 2015</span>
+        </div>
+    <div class="section" id="rust-syntax-highlighting-in-vim">
+<h1>Rust Syntax Highlighting in Vim</h1>
+<p>I use Vim on a daily basis, and now that I&#8217;m learning Rust, I wanted syntax highlighting. There are some great tools out there, but the instructions to get them to work are broken up a bit. Here are the best instructions I found in one place.</p>
+<p>First, you&#8217;ll need <a class="reference external" href="https://github.com/VundleVim/Vundle.vim">Vundle</a> if you don&#8217;t have it. Vundle is a great tool for Vim, managing plugins and making them configurable in your <span class="docutils literal"><span class="pre">.vimrc</span></span>.</p>
+<p>Make sure that your <span class="docutils literal"><span class="pre">.vim</span></span> directory has a <span class="docutils literal"><span class="pre">bundle</span></span> subdirectory. Then clone the Vundle repo there:</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+</pre></div>
+</div>
+<p>Now you can install and configure pluins within your <span class="docutils literal"><span class="pre">.vimrc</span></span>. But first, we need a little setup.</p>
+<p>This little snippet needs to go at the top of your <span class="docutils literal"><span class="pre">.vimrc</span></span>. You have to make sure that filetype is set to off and that Vundle is running before we can load the Rust plugin.:</p>
+<div class="highlight-python"><div class="highlight"><pre>set nocompatible
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin &#39;VundleVim/Vundle.vim&#39;
+
+call vundle#end()
+filetype plugin indent on
+</pre></div>
+</div>
+<p>Awesome, so now Vundle starts up, loads itself, and then it ends. After this snippet, put whatever other setting for Vim you want. Run this from the command line to ensure all is working well:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vim</span> <span class="o">+</span><span class="n">PluginInstall</span> <span class="o">+</span><span class="n">qall</span>
+</pre></div>
+</div>
+<p>Now to get the Rust highlighting. I&#8217;m using <a class="reference external" href="https://github.com/wting/rust.vim">this</a> repo, which has worked pretty great for me so far. All you need to do to use it is to add this line before the call to <span class="docutils literal"><span class="pre">vundle#end</span></span>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Plugin &#39;wting/rust.vim&#39;
+</pre></div>
+</div>
+<p>Now run the above command again to make sure everything works:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">vim</span> <span class="o">+</span><span class="n">PluginInstall</span> <span class="o">+</span><span class="n">qall</span>
+</pre></div>
+</div>
+<p>And now you should have beautiful Rust syntax highlighting!</p>
+</div>
+
+    <div class="postmeta">
+        <div class="author">
+            <span>Posted by Taylor Fahlman</span>
+        </div>
+        
+        
+        </div><ul class="related clearfix">
+            <li class="left"> &laquo; <a href="../../../2016/09/06/devlog.html">Devlog</a></li>
+            <li class="right"><a href="../17/enable_rust_on_osu_servers.html">Enable Rust on OSU Servers</a> &raquo; </li>
+        </ul></article><aside class="sidebar"><section><div class="widget">
+    <h1>Recent Posts</h1>
+    <ul><li>
+            <a href="../../../2017/08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a>
+        </li><li>
+            <a href="../../../2017/05/12/travis_and_sfml.html">Travis and SFML</a>
+        </li><li>
+            <a href="../../../2016/12/19/animation.html">Animation</a>
+        </li><li>
+            <a href="../../../2016/12/12/sprite_rendering_and_state_handling.html">Sprite Rendering and State Handling</a>
+        </li><li>
+            <a href="../../../2016/09/06/devlog.html">Devlog</a>
+        </li><li>
+            <a href="#">Rust Syntax Highlighting in Vim</a>
+        </li><li>
+            <a href="../17/enable_rust_on_osu_servers.html">Enable Rust on OSU Servers</a>
+        </li><li>
+            <a href="../../09/18/useful_ssl_openssl_commands.html">Useful OpenSSL commands</a>
+        </li><li>
+            <a href="../../07/27/summer_goals.html">Summer Goals</a>
+        </li><li>
+            <a href="../../04/27/hello_world.html">Hello World!</a>
+        </li></ul>
+</div>
+</section><section><div class="widget" id="searchbox" role="search">
+    <h1><a href="#searchbox">Search</a></h1>
+    <form action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <button type="submit"><span class="fa fa-search"></span></button>
+    </form>
+</div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
+
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+
+      </div> <!--! end of #container --><!--[if lt IE 7 ]>
+          <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+          <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+        <![endif]-->
+    </body>
+</html>

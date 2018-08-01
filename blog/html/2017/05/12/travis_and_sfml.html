@@ -1,0 +1,205 @@
+<!DOCTYPE html><!--[if lt IE 7]>      <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <title>Travis and SFML &mdash; Taylor Fahlman</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" href="../../../_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        <link rel="next" title="Animation" href="../../../2016/12/19/animation.html" /><link rel="prev" title="Graphing SNMP data with Prometheus and Grafana" href="../../08/04/graphing_snmp_data_with_prometheus_and_grafana.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Scroll to content if on small screen
+            if (screen.width < 480)
+            {
+                $(document).scrollTop(document.getElementsByTagName("article")[0].offsetTop - 44);
+            }
+        });
+    </script></head>
+    <body role="document">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+      <div id="container"><header role="banner">
+            <hgroup>
+              <h1><a href="../../../index.html">Taylor Fahlman</a></h1></hgroup>
+          </header>
+      <nav role="navigation">
+            <ul><li class="main-nav">
+                  <a href="../../../index.html">Home</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/about.html">About</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/subdomains.html">Subdomains</a>
+                </li>
+              </ul>
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>May 12, 2017</span>
+        </div>
+    <div class="section" id="travis-and-sfml">
+<h1>Travis and SFML</h1>
+<p>I currently work at the <a class="reference external" href="https://osuosl.org">Open Source Lab</a> as a Student System Admin, and
+will soon be interning on the Infrastructure team at <a class="reference external" href="https://coreos.com/">CoreOS</a> . So I like automating
+things, especially testing and building. One of the more annoying things about using
+a framework like SFML is that there is not a lot of documentation on testing them. Don&#8217;t
+get me wrong, I&#8217;m really loving SFML and its community, especially the IRC channel. But in
+asking if anyone there used anything like Travis to automate their builds, there were only
+a few that did, and even then, it was all hacked together and not easily replicable.</p>
+<p>I want to share my working Travis config for my SFML project so that anyone else out there could
+have at least a starting point.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
+<span class="l-Scalar-Plain">dist</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">trusty</span>
+<span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">required</span>
+<span class="l-Scalar-Plain">compiler</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">gcc</span>
+
+<span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">wget https://www.sfml-dev.org/files/SFML-2.3.2-linux-gcc-64-bit.tar.gz -O /tmp/sfml.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">tar -xvf /tmp/sfml.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo cp -r SFML-2.3.2/* /usr/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">wget http://www.bromeon.ch/libraries/thor/download/v2.0/thor-v2.0-linux64-make.tar.gz -O /tmp/thor.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">tar -xvf /tmp/thor.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo cp -r thor-v2.0-linux64-make/* /usr/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get update</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install g++-4.9</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">cd src</span>
+
+<span class="l-Scalar-Plain">script</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">make travis</span>
+</pre></div>
+</div>
+<p>So lets break this down a little.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">laguage</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
+<span class="l-Scalar-Plain">dist</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">trusty</span>
+<span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">required</span>
+<span class="l-Scalar-Plain">compiler</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">gcc</span>
+</pre></div>
+</div>
+<p>The language is CPP, assuming that&#8217;s what you&#8217;re using for SFML. The distro is trusty, because there are a few
+packages that don&#8217;t exist or work properly on 12.04 (default for travis) that we need. Sudo is required due
+to some commands you&#8217;ll see in the next block, and I&#8217;m using gcc, (well, really g++). Nothing there too
+out of the ordinary.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">wget https://www.sfml-dev.org/files/SFML-2.3.2-linux-gcc-64-bit.tar.gz -O /tmp/sfml.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">tar -xvf /tmp/sfml.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo cp -r SFML-2.3.2/* /usr/</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">wget http://www.bromeon.ch/libraries/thor/download/v2.0/thor-v2.0-linux64-make.tar.gz -O /tmp/thor.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">tar -xvf /tmp/thor.tar.gz</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo cp -r thor-v2.0-linux64-make/* /usr/</span>
+</pre></div>
+</div>
+<p>Ubuntu does have an SFML package, but its too low of a version for me, so I manually install the version I want. I&#8217;m also using
+Thor, a library built for SFML, so I also manually install that. This is the method I recommend for installing the SFML binaries
+because it ensures exactly what version you&#8217;ll get. You can also compile it yourself if you really want to, but I won&#8217;t cover that
+here.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get update</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install g++-4.9</span>
+</pre></div>
+</div>
+<p>First, we install all the dependencies for SFML and Thor. libudev1 and the xcb packages gave me a lot of trouble, which is why I tried using
+trusty. So here&#8217;s where I banged my head against the wall for a while. I kept getting errors about udev and undefined references on travis that
+I wasn&#8217;t getting locally. Turns out, even on trusty, the default g++ is 4.8, but 4.9 or greater is needed for udev to work (I guess?).
+Installing 4.9 fixed everything and my project compiled cleanly.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">script</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">make travis</span>
+</pre></div>
+</div>
+<p>Now, just run your make script or whatever your equivalent is. I made a separate target that specifically uses g++-4.9, but other
+than that, the target is identical to my default target.</p>
+<p>Hopefully, this will help someone out there who wants to automate their SFML build.</p>
+</div>
+
+    <div class="postmeta">
+        <div class="author">
+            <span>Posted by Taylor Fahlman</span>
+        </div>
+        <div class="categories">
+            <span>
+                Filed under:
+                <a href="../../../categories/gamedev.html">Gamedev</a></span>
+        </div>
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="../../../tags/gamedev_devlog_game_dev_sfml_c_ci_travis_build.html">gamedev devlog game dev sfml c++ ci travis build</a></span>
+        </div>
+        </div><ul class="related clearfix">
+            <li class="left"> &laquo; <a href="../../08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a></li>
+            <li class="right"><a href="../../../2016/12/19/animation.html">Animation</a> &raquo; </li>
+        </ul></article><aside class="sidebar"><section><div class="widget">
+    <h1>Recent Posts</h1>
+    <ul><li>
+            <a href="../../08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a>
+        </li><li>
+            <a href="#">Travis and SFML</a>
+        </li><li>
+            <a href="../../../2016/12/19/animation.html">Animation</a>
+        </li><li>
+            <a href="../../../2016/12/12/sprite_rendering_and_state_handling.html">Sprite Rendering and State Handling</a>
+        </li><li>
+            <a href="../../../2016/09/06/devlog.html">Devlog</a>
+        </li><li>
+            <a href="../../../2015/11/20/rust_syntax_highlighting_in_vim.html">Rust Syntax Highlighting in Vim</a>
+        </li><li>
+            <a href="../../../2015/11/17/enable_rust_on_osu_servers.html">Enable Rust on OSU Servers</a>
+        </li><li>
+            <a href="../../../2015/09/18/useful_ssl_openssl_commands.html">Useful OpenSSL commands</a>
+        </li><li>
+            <a href="../../../2015/07/27/summer_goals.html">Summer Goals</a>
+        </li><li>
+            <a href="../../../2015/04/27/hello_world.html">Hello World!</a>
+        </li></ul>
+</div>
+</section><section><div class="widget" id="searchbox" role="search">
+    <h1><a href="#searchbox">Search</a></h1>
+    <form action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <button type="submit"><span class="fa fa-search"></span></button>
+    </form>
+</div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
+
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+
+      </div> <!--! end of #container --><!--[if lt IE 7 ]>
+          <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+          <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+        <![endif]-->
+    </body>
+</html>
