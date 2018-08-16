@@ -3,10 +3,33 @@
     <channel>
         <title>Taylor Fahlman</title>
         <link>http://127.0.0.1/blog/html/</link>
-        <description></description>
+        <description>Site Reliability Engineer at Red Hat</description>
         <language>en-us</language>
-        <pubDate>Fri, 04 Aug 2017 00:00:00 -0400</pubDate>
+        <pubDate>Wed, 01 Aug 2018 00:00:00 -0400</pubDate>
         
+        <item>
+            <link>http://127.0.0.1/blog/html/2018/08/01/using_mattermost_as_a_receiver_for_alertmanager.html</link>
+            <guid>http://127.0.0.1/blog/html/2018/08/01/using_mattermost_as_a_receiver_for_alertmanager.html</guid>
+            <title><![CDATA[Using Mattermost as a receiver for Alertmanager]]></title>
+            <description><![CDATA[<h1>Using Mattermost as a receiver for Alertmanager</h1>
+<p>While working to move to Prometheus and Alertmanager for our monitoring lately,
+my team discovered that the generic <span class="docutils literal"><span class="pre">webhook_config</span></span> in Alertmanager does not work
+with a Mattermost webhook. The JSON included in the POST from Alertmanager causes Mattermost
+to return a 400, and the lack of flexibility in Alertmanager leaves a lot to be desired.
+Luckily, Mattermost webhooks translate Slack webhooks natively (according to the documentation
+<a class="reference external" href="https://docs.mattermost.com/developer/webhooks-incoming.html#slack-compatibility">here</a>), and Alertmanager natively supports Slack with a <span class="docutils literal"><span class="pre">slack_config</span></span>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">receivers</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mattermost</span>
+    <span class="l-Scalar-Plain">slack_configs</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">api_url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://{your-mattermost-site}/hooks/xxx-generatedkey-xxx</span>
+</pre></div>
+</div>
+<p>Then, customize the alert routing and message as much as you want. Further reading on custom
+templating which I found helpful is available on the <a class="reference external" href="https://prometheus.io/blog/2016/03/03/custom-alertmanager-templates/#customize">Prometheus Blog</a>.</p>
+]]></description>
+             <pubDate>Wed, 01 Aug 2018 00:00:00 -0400</pubDate>
+        </item>
+    
         <item>
             <link>http://127.0.0.1/blog/html/2017/08/04/graphing_snmp_data_with_prometheus_and_grafana.html</link>
             <guid>http://127.0.0.1/blog/html/2017/08/04/graphing_snmp_data_with_prometheus_and_grafana.html</guid>
@@ -21,7 +44,7 @@ metrics about the office network set up, using SNMP, Prometheus and Grafana.</p>
 about in the late 80’s, used for getting and modifying information about a managed device. It uses OIDs, which are allocated
 to different organizations, such as Cisco, who then in turn define their subset of OIDs in a MIB, which SNMP uses to know how
 to parse the information. Here’s an example of a request to a host with some OID</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>snmpget -v 2c -c public hostname 1.3.6.1.2.1.2.2.1.10.21
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span class="nv">$ </span>snmpget -v 2c -c public hostname 1.3.6.1.2.1.2.2.1.10.21
 IF-MIB::ifInOctets.21 <span class="o">=</span> Counter32: 17202468
 </pre></div>
 </div>
@@ -35,13 +58,13 @@ SNMP version 2 or 3, try the following command to see most of the OIDs your host
 <h2>Prometheus</h2>
 <p>With a base of SNMP understanding, now we can start getting some metrics. We’ll need Prometheus and the Prometheus SNMP Exporter. I want to run them in docker, and have them talk to each other.
 This is simple with something like Kubernetes, but for my proof-of-concept, I set up a docker bridge network, and put both containers on it.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">$ docker network create --driver bridge prometheus</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">$ docker network create --driver bridge prometheus</span>
 <span class="l-Scalar-Plain">$ docker run --network=prometheus -d -p 9116:9116 quay.io/taylor_fahlman/prom_snmp_exporter</span>
 <span class="l-Scalar-Plain">$ docker run --network=prometheus -d -p 9090:9090 -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus</span>
 </pre></div>
 </div>
 <p>And here’s the <cite>prometheus.yml</cite>:</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">global</span><span class="p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">global</span><span class="p-Indicator">:</span>
   <span class="l-Scalar-Plain">scrape_interval</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">10s</span>
   <span class="l-Scalar-Plain">evaluation_interval</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">10s</span>
 
@@ -72,7 +95,7 @@ Supermicro MIBs, its easy. You can find that tool <a class="reference external" 
 <div class="section" id="grafana">
 <h2>Grafana</h2>
 <p>This part is super easy. Spin up a Grafana container on the same bridge:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>docker run --network<span class="o">=</span>prometheus -d -p 3000:3000 grafana/grafana
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span class="nv">$ </span>docker run --network<span class="o">=</span>prometheus -d -p 3000:3000 grafana/grafana
 </pre></div>
 </div>
 <p>Follow the docs to log in and set up a Prometheus data source. Then, import <a class="reference external" href="https://grafana.com/dashboards/1124">this</a> as a Dashboard. Assuming everything was set up right,
@@ -104,7 +127,7 @@ asking if anyone there used anything like Travis to automate their builds, there
 a few that did, and even then, it was all hacked together and not easily replicable.</p>
 <p>I want to share my working Travis config for my SFML project so that anyone else out there could
 have at least a starting point.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
 <span class="l-Scalar-Plain">dist</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">trusty</span>
 <span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">required</span>
 <span class="l-Scalar-Plain">compiler</span><span class="p-Indicator">:</span>
@@ -127,7 +150,7 @@ have at least a starting point.</p>
 </pre></div>
 </div>
 <p>So lets break this down a little.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">laguage</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">laguage</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
 <span class="l-Scalar-Plain">dist</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">trusty</span>
 <span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">required</span>
 <span class="l-Scalar-Plain">compiler</span><span class="p-Indicator">:</span>
@@ -138,7 +161,7 @@ have at least a starting point.</p>
 packages that don’t exist or work properly on 12.04 (default for travis) that we need. Sudo is required due
 to some commands you’ll see in the next block, and I’m using gcc, (well, really g++). Nothing there too
 out of the ordinary.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">wget https://www.sfml-dev.org/files/SFML-2.3.2-linux-gcc-64-bit.tar.gz -O /tmp/sfml.tar.gz</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">tar -xvf /tmp/sfml.tar.gz</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo cp -r SFML-2.3.2/* /usr/</span>
@@ -151,7 +174,7 @@ out of the ordinary.</p>
 Thor, a library built for SFML, so I also manually install that. This is the method I recommend for installing the SFML binaries
 because it ensures exactly what version you’ll get. You can also compile it yourself if you really want to, but I won’t cover that
 here.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1</span>
 <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y</span>
 <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get update</span>
 <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install g++-4.9</span>
@@ -161,7 +184,7 @@ here.</p>
 trusty. So here’s where I banged my head against the wall for a while. I kept getting errors about udev and undefined references on travis that
 I wasn’t getting locally. Turns out, even on trusty, the default g++ is 4.8, but 4.9 or greater is needed for udev to work (I guess?).
 Installing 4.9 fixed everything and my project compiled cleanly.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">script</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">make travis</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">script</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">make travis</span>
 </pre></div>
 </div>
 <p>Now, just run your make script or whatever your equivalent is. I made a separate target that specifically uses g++-4.9, but other
@@ -182,7 +205,7 @@ of directly with sprites, so I opted to use the Thor library. It has some great 
 I think I’ll also use the action handling component of Thor in the future, but for now I’m just using
 the Animation component.</p>
 <p>Before this, I manually moved the sprite’s position every time I pressed an arrow key. It looked something like</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
 <span class="p">{</span>
         <span class="k">if</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">isKeyPressed</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">Down</span><span class="p">)){</span>
                 <span class="k">if</span><span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">)</span>
@@ -200,7 +223,7 @@ the Animation component.</p>
 <p>As you can see, there is a lot that can go wrong here, and animation without some sort of counter and
 change to how I handled textures was going to be hard and tedious. But Thor’s animation makes this
 much easier. First you load the animations</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">Thor</span><span class="o">::</span><span class="n">FrameAnimation</span> <span class="n">playerDown</span><span class="p">;</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="n">Thor</span><span class="o">::</span><span class="n">FrameAnimation</span> <span class="n">playerDown</span><span class="p">;</span>
 <span class="n">Thor</span><span class="o">::</span><span class="n">Animator</span> <span class="n">animator</span><span class="p">;</span>
 
 <span class="n">loadAnimations</span><span class="p">()</span> <span class="p">{</span>
@@ -214,7 +237,7 @@ much easier. First you load the animations</p>
 </div>
 <p>We use an animator from Thor to keep track of all the animations we need, with a reference by a string
 similar to how the texture manager works, and a duration. Now our input handling block will play the animation</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
     <span class="p">{</span>
         <span class="k">if</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">isKeyPressed</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">Down</span><span class="p">)){</span>
             <span class="k">if</span><span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">)</span>
@@ -273,7 +296,7 @@ other states yet, but this is the general way they work.</p>
 state, the TextureManager takes a string, image file, and coordinates. It then takes the
 resulting slice of the image file and add it to a std::map with the string as its id.
 So when applying a texture, it looks something like</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">playerSprite</span><span class="p">.</span><span class="n">setTexture</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">textureManager</span><span class="p">.</span><span class="n">getRef</span><span class="p">(</span><span class="s">"right"</span><span class="p">));</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="n">playerSprite</span><span class="p">.</span><span class="n">setTexture</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">textureManager</span><span class="p">.</span><span class="n">getRef</span><span class="p">(</span><span class="s">"right"</span><span class="p">));</span>
 </pre></div>
 </div>
 <p>The ‘right’ reference then returns the corresponding texture. This makes it
@@ -296,33 +319,33 @@ next time!</p>
 <p>I use Vim on a daily basis, and now that I’m learning Rust, I wanted syntax highlighting. There are some great tools out there, but the instructions to get them to work are broken up a bit. Here are the best instructions I found in one place.</p>
 <p>First, you’ll need <a class="reference external" href="https://github.com/VundleVim/Vundle.vim">Vundle</a> if you don’t have it. Vundle is a great tool for Vim, managing plugins and making them configurable in your <span class="docutils literal"><span class="pre">.vimrc</span></span>.</p>
 <p>Make sure that your <span class="docutils literal"><span class="pre">.vim</span></span> directory has a <span class="docutils literal"><span class="pre">bundle</span></span> subdirectory. Then clone the Vundle repo there:</p>
-<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">VundleVim</span><span class="o">/</span><span class="n">Vundle</span><span class="o">.</span><span class="n">vim</span><span class="o">.</span><span class="n">git</span> <span class="o">~/.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">Vundle</span><span class="o">.</span><span class="n">vim</span>
 </pre></div>
 </div>
 <p>Now you can install and configure pluins within your <span class="docutils literal"><span class="pre">.vimrc</span></span>. But first, we need a little setup.</p>
 <p>This little snippet needs to go at the top of your <span class="docutils literal"><span class="pre">.vimrc</span></span>. You have to make sure that filetype is set to off and that Vundle is running before we can load the Rust plugin.:</p>
-<div class="highlight-python"><div class="highlight"><pre>set nocompatible
-filetype off
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="nb">set</span> <span class="n">nocompatible</span>
+<span class="n">filetype</span> <span class="n">off</span>
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+<span class="nb">set</span> <span class="n">rtp</span><span class="o">+=~/.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">Vundle</span><span class="o">.</span><span class="n">vim</span>
+<span class="n">call</span> <span class="n">vundle</span><span class="c">#begin()</span>
 
-Plugin 'VundleVim/Vundle.vim'
+<span class="n">Plugin</span> <span class="s">'VundleVim/Vundle.vim'</span>
 
-call vundle#end()
-filetype plugin indent on
+<span class="n">call</span> <span class="n">vundle</span><span class="c">#end()</span>
+<span class="n">filetype</span> <span class="n">plugin</span> <span class="n">indent</span> <span class="n">on</span>
 </pre></div>
 </div>
 <p>Awesome, so now Vundle starts up, loads itself, and then it ends. After this snippet, put whatever other setting for Vim you want. Run this from the command line to ensure all is working well:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">vim</span> <span class="o">+</span><span class="n">PluginInstall</span> <span class="o">+</span><span class="n">qall</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">vim</span> <span class="o">+</span><span class="n">PluginInstall</span> <span class="o">+</span><span class="n">qall</span>
 </pre></div>
 </div>
 <p>Now to get the Rust highlighting. I’m using <a class="reference external" href="https://github.com/wting/rust.vim">this</a> repo, which has worked pretty great for me so far. All you need to do to use it is to add this line before the call to <span class="docutils literal"><span class="pre">vundle#end</span></span>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Plugin 'wting/rust.vim'
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">Plugin</span> <span class="s">'wting/rust.vim'</span>
 </pre></div>
 </div>
 <p>Now run the above command again to make sure everything works:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">vim</span> <span class="o">+</span><span class="n">PluginInstall</span> <span class="o">+</span><span class="n">qall</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">vim</span> <span class="o">+</span><span class="n">PluginInstall</span> <span class="o">+</span><span class="n">qall</span>
 </pre></div>
 </div>
 <p>And now you should have beautiful Rust syntax highlighting!</p>
@@ -336,16 +359,16 @@ filetype plugin indent on
             <title><![CDATA[Enable Rust on OSU Servers]]></title>
             <description><![CDATA[<h1>Enable Rust on OSU Servers</h1>
 <p>Rust was recently installed on flip{1-3} at Oregon State. In order to use it, you must first add the path to the library to your LD_LIBRARY_PATH:</p>
-<div class="highlight-python"><div class="highlight"><pre>export LD_LIBRARY_PATH=/usr/local/apps/rust/lib:$LD_LIBRARY_PATH
+<div class="highlight-default notranslate"><div class="highlight"><pre>export LD_LIBRARY_PATH=/usr/local/apps/rust/lib:$LD_LIBRARY_PATH
 </pre></div>
 </div>
 <p>Now add the Rust binary directory path to your $PATH. This is needed for cargo to work:</p>
-<div class="highlight-python"><div class="highlight"><pre>export PATH=$PATH:/usr/local/apps/rust-1.4.0/bin/
+<div class="highlight-default notranslate"><div class="highlight"><pre>export PATH=$PATH:/usr/local/apps/rust-1.4.0/bin/
 </pre></div>
 </div>
 <p>Now you just need to alias rustc and cargo to the full paths:</p>
-<div class="highlight-python"><div class="highlight"><pre>alias rustc="/usr/local/apps/rust-1.4.0/bin/rustc"
-alias cargo="/usr/local/apps/rust-1.4.0/bin/cargo"
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">alias</span> <span class="n">rustc</span><span class="o">=</span><span class="s">"/usr/local/apps/rust-1.4.0/bin/rustc"</span>
+<span class="n">alias</span> <span class="n">cargo</span><span class="o">=</span><span class="s">"/usr/local/apps/rust-1.4.0/bin/cargo"</span>
 </pre></div>
 </div>
 <p>Happy Rusting</p>
@@ -360,19 +383,19 @@ alias cargo="/usr/local/apps/rust-1.4.0/bin/cargo"
             <description><![CDATA[<h1>Useful OpenSSL commands</h1>
 <p>Here a few useful commands I found when working with certs lately</p>
 <p>Covert a pfx file into a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl pkcs12 -in foo.pfx -out foo.pem -nodes
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">pkcs12</span> <span class="o">-</span><span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">pfx</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">nodes</span>
 </pre></div>
 </div>
 <p>Extract the key out of a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl pkey -in foo.pem -out foo.key
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">pkey</span> <span class="o">-</span><span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">key</span>
 </pre></div>
 </div>
 <p>Extrct CA cert chain out of a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl crl2pkcs7 -nocrl -certfile foo.pem | openssl pkcs7 -print_certs -out foo.chain.crt
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">crl2pkcs7</span> <span class="o">-</span><span class="n">nocrl</span> <span class="o">-</span><span class="n">certfile</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">|</span> <span class="n">openssl</span> <span class="n">pkcs7</span> <span class="o">-</span><span class="n">print_certs</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">crt</span>
 </pre></div>
 </div>
 <p>Extract cert out of a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl x509 -in foo.pem -outform DER -out foo.crt
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">x509</span> <span class="o">-</span><span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">outform</span> <span class="n">DER</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">crt</span>
 </pre></div>
 </div>
 ]]></description>

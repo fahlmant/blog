@@ -28,12 +28,13 @@
         <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5',
+        VERSION:     '1.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
@@ -54,7 +55,7 @@
 
       <div id="container"><header role="banner">
             <hgroup>
-              <h1><a href="../../../index.html">Taylor Fahlman</a></h1></hgroup>
+              <h1><a href="../../../index.html">Taylor Fahlman</a></h1><h2>Site Reliability Engineer at Red Hat</h2></hgroup>
           </header>
       <nav role="navigation">
             <ul><li class="main-nav">
@@ -70,12 +71,12 @@
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article>
     <div class="section" id="devlog">
 <h1>Devlog</h1>
-<p>Hello! I&#8217;ve decided to start a devlog on this blog. As you can see, I&#8217;ve used
-this for other things, but I&#8217;m going to use this as my devlog from now on. I&#8217;ve
-started a game and I don&#8217;t know if  I&#8217;ll generate any interest, but who knows.
+<p>Hello! I’ve decided to start a devlog on this blog. As you can see, I’ve used
+this for other things, but I’m going to use this as my devlog from now on. I’ve
+started a game and I don’t know if  I’ll generate any interest, but who knows.
 This may just be my own echo chamber, and maybe a place to log all the things
-I&#8217;ve learned, but so be it.</p>
-<p>I&#8217;m a little nervous to let my idea out of the bag, but I&#8217;d rather get people
+I’ve learned, but so be it.</p>
+<p>I’m a little nervous to let my idea out of the bag, but I’d rather get people
 interested early in the story. My goal is to be as historically accurate as
 possible. I say historically because..</p>
 <p>The story follows a bodygaurd in 1886 America. In this alternate timeline, you
@@ -84,10 +85,10 @@ After thwarting John Wilkes Booth assasination attempt, Lincoln wants you to
 escort him via train to the Pacific Northwest.</p>
 <p>The gameplay so far is going to be a sidescrolling arcade-ish game. Hopefully
 I can get some screenshots up soon. But back to historically accurate, I want
-to capture the feel of the late 1880&#8217;s, with music and style, and pre-steam
-punk &#8216;future tech&#8217;. I also want to follow the railroad tracks from that time
+to capture the feel of the late 1880’s, with music and style, and pre-steam
+punk ‘future tech’. I also want to follow the railroad tracks from that time
 as closely as possible.</p>
-<p>So far, I&#8217;ve been working on the game for about a week. I am using SFML and C++
+<p>So far, I’ve been working on the game for about a week. I am using SFML and C++
 to roll my own mini-engine but it will be integral
 to the game. I have created a StateManager class that creates a stack of
 GameStates and controls the game loop. It controlls pushes, pops, and the
@@ -96,10 +97,10 @@ functions for the input handling, updatating the screen and drawing to it.
 The virtual functions make it so that children class, like the MenuState
 or the PauseState or whatever have to implement and handle their own input and
 update handling. As of now, I have this working with a menu state that can
-transition to the gameplay state. I can&#8217;t go back yet to the menu yet. Right now
-I&#8217;m working on handling textures, sprites, and animations. No big roadblocks
+transition to the gameplay state. I can’t go back yet to the menu yet. Right now
+I’m working on handling textures, sprites, and animations. No big roadblocks
 yet!</p>
-<p>Thank you for anyone who is looking at this! I&#8217;m glad that at least someone is
+<p>Thank you for anyone who is looking at this! I’m glad that at least someone is
 reading this.</p>
 </div>
 
@@ -120,6 +121,8 @@ reading this.</p>
         </div></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="../../../2018/08/01/using_mattermost_as_a_receiver_for_alertmanager.html">Using Mattermost as a receiver for Alertmanager</a>
+        </li><li>
             <a href="../../../2017/08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a>
         </li><li>
             <a href="../../../2017/05/12/travis_and_sfml.html">Travis and SFML</a>
@@ -143,7 +146,7 @@ reading this.</p>
     </form>
 </div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
 
-        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
 
       </div> <!--! end of #container --><!--[if lt IE 7 ]>
           <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>

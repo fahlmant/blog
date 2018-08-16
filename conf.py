@@ -13,7 +13,7 @@ import tinkerer.paths
 project = "Taylor Fahlman"
 
 # Change this to the tagline of your blog
-tagline = ''
+tagline = 'Site Reliability Engineer at Red Hat'
 
 # Change this to the description of your blog
 description = ''
@@ -22,7 +22,7 @@ description = ''
 author = 'Taylor Fahlman'
 
 # Change this to your copyright string
-copyright = '2015, ' + author
+copyright = '2018, ' + author
 
 # Change this to your blog root URL (required for RSS feed)
 website = 'http://127.0.0.1/blog/html/'
@@ -78,6 +78,9 @@ html_static_path = ['_static', tinkerer.paths.static]
 # Add other theme paths here
 html_theme_path = ['_themes', tinkerer.paths.themes]
 
+html_theme_options = {
+    'accent_color': '#cc0000'
+}
 # Add file patterns to exclude from build
 exclude_patterns = ['drafts/*', '_templates/*']
 

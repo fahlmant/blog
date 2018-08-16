@@ -28,12 +28,13 @@
         <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
-        <link rel="next" title="Rust Syntax Highlighting in Vim" href="../../../2015/11/20/rust_syntax_highlighting_in_vim.html" /><link rel="prev" title="Animation" href="../19/animation.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Rust Syntax Highlighting in Vim" href="../../../2015/11/20/rust_syntax_highlighting_in_vim.html" /><link rel="prev" title="Animation" href="../19/animation.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5',
+        VERSION:     '1.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
@@ -54,7 +55,7 @@
 
       <div id="container"><header role="banner">
             <hgroup>
-              <h1><a href="../../../index.html">Taylor Fahlman</a></h1></hgroup>
+              <h1><a href="../../../index.html">Taylor Fahlman</a></h1><h2>Site Reliability Engineer at Red Hat</h2></hgroup>
           </header>
       <nav role="navigation">
             <ul><li class="main-nav">
@@ -72,10 +73,10 @@
         </div>
     <div class="section" id="sprite-rendering-and-state-handling">
 <h1>Sprite Rendering and State Handling</h1>
-<p>After a long hiatus (thanks to a 19 credit term), I&#8217;m back to working on the game.
+<p>After a long hiatus (thanks to a 19 credit term), I’m back to working on the game.
 Textures and sprites now can be loaded and drawn pretty easily. Chaning between the states
 is now smoothly handled after I removed a bug. Now I can start the game in a menu, click on
-a button, transition to the &#8216;gameplay&#8217; and render a sprite that changes when pressing the
+a button, transition to the ‘gameplay’ and render a sprite that changes when pressing the
 direction keys. Now time to explain how it all works, after a short GIF!</p>
 <p>(GIF Here)</p>
 <p>The first part of the architecture I worked on was state handling. The most basic thing
@@ -87,24 +88,24 @@ and change states, which is just a combination of pop and push. The state manage
 also runs the game loop, which handles input, updates the state based on the input,
 and draws all the changes. It does this by using a parent GameState objet, and running
 the respective functions of whatever the state actually is.</p>
-<p>The GameState parent class isn&#8217;t used directy in the game, but instead provides
+<p>The GameState parent class isn’t used directy in the game, but instead provides
 the basic functions that each state will need to implement themselves, and lets
 the StateManager not care which state is currently on top of the stack. The MenuState
 currently has a blue background and a placeholder button. The input handling function
-only looks for mouse click within the parameters of the drawn sprite. The PlayState&#8217;s
-input handling fucntion instead check if the arrow keys are pressed. I haven&#8217;t implemented
+only looks for mouse click within the parameters of the drawn sprite. The PlayState’s
+input handling fucntion instead check if the arrow keys are pressed. I haven’t implemented
 other states yet, but this is the general way they work.</p>
-<p>For textures, I&#8217;ve created a TextureManager. When a texture is needed to be loaded in a
+<p>For textures, I’ve created a TextureManager. When a texture is needed to be loaded in a
 state, the TextureManager takes a string, image file, and coordinates. It then takes the
 resulting slice of the image file and add it to a std::map with the string as its id.
 So when applying a texture, it looks something like</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">playerSprite</span><span class="p">.</span><span class="n">setTexture</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">textureManager</span><span class="p">.</span><span class="n">getRef</span><span class="p">(</span><span class="s">&quot;right&quot;</span><span class="p">));</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="n">playerSprite</span><span class="p">.</span><span class="n">setTexture</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">textureManager</span><span class="p">.</span><span class="n">getRef</span><span class="p">(</span><span class="s">&quot;right&quot;</span><span class="p">));</span>
 </pre></div>
 </div>
-<p>The &#8216;right&#8217; reference then returns the corresponding texture. This makes it
+<p>The ‘right’ reference then returns the corresponding texture. This makes it
 really easy to have multiple textures that you can apply to a single sprite,
 or to resuse a texture across mutliple sprites.</p>
-<p>Unfortunately, this doesn&#8217;t work great for animation. I&#8217;m currently in the process of
+<p>Unfortunately, this doesn’t work great for animation. I’m currently in the process of
 writing the animation componenet. Once that is done, I hope to work on making events easier
 to handle, rather than a big case statement looking for certain keys to be pressed. Until
 next time!</p>
@@ -130,6 +131,8 @@ next time!</p>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="../../../2018/08/01/using_mattermost_as_a_receiver_for_alertmanager.html">Using Mattermost as a receiver for Alertmanager</a>
+        </li><li>
             <a href="../../../2017/08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a>
         </li><li>
             <a href="../../../2017/05/12/travis_and_sfml.html">Travis and SFML</a>
@@ -153,7 +156,7 @@ next time!</p>
     </form>
 </div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
 
-        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
 
       </div> <!--! end of #container --><!--[if lt IE 7 ]>
           <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>

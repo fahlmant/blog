@@ -28,12 +28,13 @@
         <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
-        <link rel="next" title="Sprite Rendering and State Handling" href="../12/sprite_rendering_and_state_handling.html" /><link rel="prev" title="Travis and SFML" href="../../../2017/05/12/travis_and_sfml.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Sprite Rendering and State Handling" href="../12/sprite_rendering_and_state_handling.html" /><link rel="prev" title="Travis and SFML" href="../../../2017/05/12/travis_and_sfml.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5',
+        VERSION:     '1.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
@@ -54,7 +55,7 @@
 
       <div id="container"><header role="banner">
             <hgroup>
-              <h1><a href="../../../index.html">Taylor Fahlman</a></h1></hgroup>
+              <h1><a href="../../../index.html">Taylor Fahlman</a></h1><h2>Site Reliability Engineer at Red Hat</h2></hgroup>
           </header>
       <nav role="navigation">
             <ul><li class="main-nav">
@@ -74,10 +75,10 @@
 <h1>Animation</h1>
 <p>An animation handler is decently hard to write, especially when working with objects instead
 of directly with sprites, so I opted to use the Thor library. It has some great tools and tutorials.
-I think I&#8217;ll also use the action handling component of Thor in the future, but for now I&#8217;m just using
+I think I’ll also use the action handling component of Thor in the future, but for now I’m just using
 the Animation component.</p>
-<p>Before this, I manually moved the sprite&#8217;s position every time I pressed an arrow key. It looked something like</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
+<p>Before this, I manually moved the sprite’s position every time I pressed an arrow key. It looked something like</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
 <span class="p">{</span>
         <span class="k">if</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">isKeyPressed</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">Down</span><span class="p">)){</span>
                 <span class="k">if</span><span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">)</span>
@@ -93,9 +94,9 @@ the Animation component.</p>
 </pre></div>
 </div>
 <p>As you can see, there is a lot that can go wrong here, and animation without some sort of counter and
-change to how I handled textures was going to be hard and tedious. But Thor&#8217;s animation makes this
+change to how I handled textures was going to be hard and tedious. But Thor’s animation makes this
 much easier. First you load the animations</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">Thor</span><span class="o">::</span><span class="n">FrameAnimation</span> <span class="n">playerDown</span><span class="p">;</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="n">Thor</span><span class="o">::</span><span class="n">FrameAnimation</span> <span class="n">playerDown</span><span class="p">;</span>
 <span class="n">Thor</span><span class="o">::</span><span class="n">Animator</span> <span class="n">animator</span><span class="p">;</span>
 
 <span class="n">loadAnimations</span><span class="p">()</span> <span class="p">{</span>
@@ -109,7 +110,7 @@ much easier. First you load the animations</p>
 </div>
 <p>We use an animator from Thor to keep track of all the animations we need, with a reference by a string
 similar to how the texture manager works, and a duration. Now our input handling block will play the animation</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span class="k">case</span> <span class="n">sf</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="nl">KeyPressed</span><span class="p">:</span>
     <span class="p">{</span>
         <span class="k">if</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">isKeyPressed</span><span class="p">(</span><span class="n">sf</span><span class="o">::</span><span class="n">Keyboard</span><span class="o">::</span><span class="n">Down</span><span class="p">)){</span>
             <span class="k">if</span><span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">)</span>
@@ -126,7 +127,7 @@ similar to how the texture manager works, and a duration. Now our input handling
     <span class="n">animator</span><span class="p">.</span><span class="n">animate</span><span class="p">(</span><span class="n">playerSprite</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>And that&#8217;s all there is to get the animations I need for player movement as of now. Once we load the frames
+<p>And that’s all there is to get the animations I need for player movement as of now. Once we load the frames
 we want played and ensure the clock gets restarted, we just need to set the animation we want, and tell the
 animator to handle it, and Thor takes care of it all for us. This is essentially what I wanted my animation
 handler to do, but Thor did it much more elegantly and efficiently than I could.</p>
@@ -154,6 +155,8 @@ does not scale. Time to implement an entity-component system.</p>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="../../../2018/08/01/using_mattermost_as_a_receiver_for_alertmanager.html">Using Mattermost as a receiver for Alertmanager</a>
+        </li><li>
             <a href="../../../2017/08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a>
         </li><li>
             <a href="../../../2017/05/12/travis_and_sfml.html">Travis and SFML</a>
@@ -177,7 +180,7 @@ does not scale. Time to implement an entity-component system.</p>
     </form>
 </div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
 
-        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
 
       </div> <!--! end of #container --><!--[if lt IE 7 ]>
           <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>

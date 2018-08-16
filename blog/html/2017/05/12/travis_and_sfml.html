@@ -28,12 +28,13 @@
         <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
-        <link rel="next" title="Animation" href="../../../2016/12/19/animation.html" /><link rel="prev" title="Graphing SNMP data with Prometheus and Grafana" href="../../08/04/graphing_snmp_data_with_prometheus_and_grafana.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Animation" href="../../../2016/12/19/animation.html" /><link rel="prev" title="Graphing SNMP data with Prometheus and Grafana" href="../../08/04/graphing_snmp_data_with_prometheus_and_grafana.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5',
+        VERSION:     '1.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
@@ -54,7 +55,7 @@
 
       <div id="container"><header role="banner">
             <hgroup>
-              <h1><a href="../../../index.html">Taylor Fahlman</a></h1></hgroup>
+              <h1><a href="../../../index.html">Taylor Fahlman</a></h1><h2>Site Reliability Engineer at Red Hat</h2></hgroup>
           </header>
       <nav role="navigation">
             <ul><li class="main-nav">
@@ -75,13 +76,13 @@
 <p>I currently work at the <a class="reference external" href="https://osuosl.org">Open Source Lab</a> as a Student System Admin, and
 will soon be interning on the Infrastructure team at <a class="reference external" href="https://coreos.com/">CoreOS</a> . So I like automating
 things, especially testing and building. One of the more annoying things about using
-a framework like SFML is that there is not a lot of documentation on testing them. Don&#8217;t
-get me wrong, I&#8217;m really loving SFML and its community, especially the IRC channel. But in
+a framework like SFML is that there is not a lot of documentation on testing them. Don’t
+get me wrong, I’m really loving SFML and its community, especially the IRC channel. But in
 asking if anyone there used anything like Travis to automate their builds, there were only
 a few that did, and even then, it was all hacked together and not easily replicable.</p>
 <p>I want to share my working Travis config for my SFML project so that anyone else out there could
 have at least a starting point.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
 <span class="l-Scalar-Plain">dist</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">trusty</span>
 <span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">required</span>
 <span class="l-Scalar-Plain">compiler</span><span class="p-Indicator">:</span>
@@ -104,18 +105,18 @@ have at least a starting point.</p>
 </pre></div>
 </div>
 <p>So lets break this down a little.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">laguage</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">laguage</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cpp</span>
 <span class="l-Scalar-Plain">dist</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">trusty</span>
 <span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">required</span>
 <span class="l-Scalar-Plain">compiler</span><span class="p-Indicator">:</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">gcc</span>
 </pre></div>
 </div>
-<p>The language is CPP, assuming that&#8217;s what you&#8217;re using for SFML. The distro is trusty, because there are a few
-packages that don&#8217;t exist or work properly on 12.04 (default for travis) that we need. Sudo is required due
-to some commands you&#8217;ll see in the next block, and I&#8217;m using gcc, (well, really g++). Nothing there too
+<p>The language is CPP, assuming that’s what you’re using for SFML. The distro is trusty, because there are a few
+packages that don’t exist or work properly on 12.04 (default for travis) that we need. Sudo is required due
+to some commands you’ll see in the next block, and I’m using gcc, (well, really g++). Nothing there too
 out of the ordinary.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">wget https://www.sfml-dev.org/files/SFML-2.3.2-linux-gcc-64-bit.tar.gz -O /tmp/sfml.tar.gz</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">tar -xvf /tmp/sfml.tar.gz</span>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo cp -r SFML-2.3.2/* /usr/</span>
@@ -124,21 +125,21 @@ out of the ordinary.</p>
   <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo cp -r thor-v2.0-linux64-make/* /usr/</span>
 </pre></div>
 </div>
-<p>Ubuntu does have an SFML package, but its too low of a version for me, so I manually install the version I want. I&#8217;m also using
+<p>Ubuntu does have an SFML package, but its too low of a version for me, so I manually install the version I want. I’m also using
 Thor, a library built for SFML, so I also manually install that. This is the method I recommend for installing the SFML binaries
-because it ensures exactly what version you&#8217;ll get. You can also compile it yourself if you really want to, but I won&#8217;t cover that
+because it ensures exactly what version you’ll get. You can also compile it yourself if you really want to, but I won’t cover that
 here.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1</span>
 <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y</span>
 <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get update</span>
 <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">sudo apt-get install g++-4.9</span>
 </pre></div>
 </div>
 <p>First, we install all the dependencies for SFML and Thor. libudev1 and the xcb packages gave me a lot of trouble, which is why I tried using
-trusty. So here&#8217;s where I banged my head against the wall for a while. I kept getting errors about udev and undefined references on travis that
-I wasn&#8217;t getting locally. Turns out, even on trusty, the default g++ is 4.8, but 4.9 or greater is needed for udev to work (I guess?).
+trusty. So here’s where I banged my head against the wall for a while. I kept getting errors about udev and undefined references on travis that
+I wasn’t getting locally. Turns out, even on trusty, the default g++ is 4.8, but 4.9 or greater is needed for udev to work (I guess?).
 Installing 4.9 fixed everything and my project compiled cleanly.</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">script</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">make travis</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span class="l-Scalar-Plain">script</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">make travis</span>
 </pre></div>
 </div>
 <p>Now, just run your make script or whatever your equivalent is. I made a separate target that specifically uses g++-4.9, but other
@@ -166,6 +167,8 @@ than that, the target is identical to my default target.</p>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="../../../2018/08/01/using_mattermost_as_a_receiver_for_alertmanager.html">Using Mattermost as a receiver for Alertmanager</a>
+        </li><li>
             <a href="../../08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a>
         </li><li>
             <a href="#">Travis and SFML</a>
@@ -189,7 +192,7 @@ than that, the target is identical to my default target.</p>
     </form>
 </div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
 
-        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
 
       </div> <!--! end of #container --><!--[if lt IE 7 ]>
           <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>

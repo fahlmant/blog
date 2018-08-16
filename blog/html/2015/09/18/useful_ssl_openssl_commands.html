@@ -28,12 +28,13 @@
         <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
-        <link rel="prev" title="Enable Rust on OSU Servers" href="../../11/17/enable_rust_on_osu_servers.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="prev" title="Enable Rust on OSU Servers" href="../../11/17/enable_rust_on_osu_servers.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.5',
+        VERSION:     '1.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
     </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
@@ -54,7 +55,7 @@
 
       <div id="container"><header role="banner">
             <hgroup>
-              <h1><a href="../../../index.html">Taylor Fahlman</a></h1></hgroup>
+              <h1><a href="../../../index.html">Taylor Fahlman</a></h1><h2>Site Reliability Engineer at Red Hat</h2></hgroup>
           </header>
       <nav role="navigation">
             <ul><li class="main-nav">
@@ -74,19 +75,19 @@
 <h1>Useful OpenSSL commands</h1>
 <p>Here a few useful commands I found when working with certs lately</p>
 <p>Covert a pfx file into a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl pkcs12 -in foo.pfx -out foo.pem -nodes
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">pkcs12</span> <span class="o">-</span><span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">pfx</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">nodes</span>
 </pre></div>
 </div>
 <p>Extract the key out of a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl pkey -in foo.pem -out foo.key
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">pkey</span> <span class="o">-</span><span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">key</span>
 </pre></div>
 </div>
 <p>Extrct CA cert chain out of a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl crl2pkcs7 -nocrl -certfile foo.pem | openssl pkcs7 -print_certs -out foo.chain.crt
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">crl2pkcs7</span> <span class="o">-</span><span class="n">nocrl</span> <span class="o">-</span><span class="n">certfile</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">|</span> <span class="n">openssl</span> <span class="n">pkcs7</span> <span class="o">-</span><span class="n">print_certs</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">crt</span>
 </pre></div>
 </div>
 <p>Extract cert out of a pem:</p>
-<div class="highlight-python"><div class="highlight"><pre>openssl x509 -in foo.pem -outform DER -out foo.crt
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">openssl</span> <span class="n">x509</span> <span class="o">-</span><span class="ow">in</span> <span class="n">foo</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">outform</span> <span class="n">DER</span> <span class="o">-</span><span class="n">out</span> <span class="n">foo</span><span class="o">.</span><span class="n">crt</span>
 </pre></div>
 </div>
 </div>
@@ -107,6 +108,8 @@
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="../../../2018/08/01/using_mattermost_as_a_receiver_for_alertmanager.html">Using Mattermost as a receiver for Alertmanager</a>
+        </li><li>
             <a href="../../../2017/08/04/graphing_snmp_data_with_prometheus_and_grafana.html">Graphing SNMP data with Prometheus and Grafana</a>
         </li><li>
             <a href="../../../2017/05/12/travis_and_sfml.html">Travis and SFML</a>
@@ -130,7 +133,7 @@
     </form>
 </div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
 
-        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2018, Taylor Fahlman. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
 
       </div> <!--! end of #container --><!--[if lt IE 7 ]>
           <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
