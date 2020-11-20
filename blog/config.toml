@@ -1,4 +1,4 @@
-baseURL = "https://fahlman/dev"
+baseURL = "https://fahlman.dev"
 languageCode = "en-us"
 title = "Taylor Fahlman"
 theme = "hugo-theme-codex"
@@ -11,6 +11,11 @@ theme = "hugo-theme-codex"
   iconOrder = ["Twitter", "GitHub"]
   showPageTitleInTOC = true
 
+[[menu.main]]
+    identifier = "home"
+    name = "home"
+    title = "Home - Taylor Fahlman"
+    url = "/"
 [[menu.main]]
     identifier = "about"
     name = "about"
