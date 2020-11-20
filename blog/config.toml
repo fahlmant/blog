@@ -27,3 +27,8 @@ theme = "hugo-theme-codex"
     name = "posts"
     title = "Posts"
     url = "/posts"
+[[menu.main]]
+    identifier = "resume"
+    name = "resume"
+    title = "Resume"
+    url = "/resume"
