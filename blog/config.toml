@@ -6,9 +6,10 @@ theme = "hugo-theme-codex"
 [params]
   twitter = "https://twitter.com/taylorfahlman"
   github = "https://github.com/fahlmant"
+  email = "taylor@fahlman.dev"
   # ...
 
-  iconOrder = ["Twitter", "GitHub"]
+  iconOrder = ["GitHub", "Twitter", "Email"]
   showPageTitleInTOC = true
 
 [[menu.main]]
