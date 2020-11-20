@@ -6,7 +6,7 @@ theme = "hugo-theme-codex"
 [params]
   twitter = "https://twitter.com/taylorfahlman"
   github = "https://github.com/fahlmant"
-  email = "taylor@fahlman.dev"
+  email = "mailto:taylor@fahlman.dev"
   # ...
 
   iconOrder = ["GitHub", "Twitter", "Email"]
