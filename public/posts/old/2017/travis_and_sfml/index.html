@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <title>Travis and SFML | Taylor Fahlman</title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Travis and SFML" />
+  <meta name="twitter:description" content=""/>
+  <meta name="twitter:site" content="https://twitter.com/taylorfahlman" />
+  <meta name="twitter:creator" content="https://twitter.com/taylorfahlman" />
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+
+  
+  
+    
+ 
+  
+  
+  
+  
+  
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/custom.min.1a24c00ffbc3447cfec89732e77537056ba832bc1eae415d446372922f208302.css" integrity="sha256-GiTAD/vDRHz&#43;yJcy53U3BWuoMrwerkFdRGNyki8ggwI="/>
+  
+  
+   
+   
+    
+
+<script type="application/ld+json">
+  
+    { 
+      "@context": "http://schema.org", 
+      "@type": "WebSite", 
+      "url": "https:\/\/fahlman.dev\/posts\/old\/2017\/travis_and_sfml\/",
+      "name": "Travis and SFML",
+      "author": {
+        "@type": "Person",
+        "name": ""
+      },
+      "description": ""
+    }
+  
+  </script>
+</head>
+
+<body>
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+ 
+
+  <nav class="nav" id="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/posts">posts</a>
+      </li>
+    
+      <li>
+        <a  href="/resume">resume</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">Travis and SFML</h1>
+            <time datetime="2017-05-12 00:00:00 &#43;0000 UTC" class="post__date">May 12 2017</time> 
+          </header>
+          <article class="post__content">
+              
+<p>I currently work at the <a href="https://osuosl.org" 
+  
+   target="_blank" rel="noreferrer noopener" 
+>Open Source Lab</a> as a
+Student System Admin, and will soon be interning on the Infrastructure
+team at <a href="https://coreos.com/" 
+  
+   target="_blank" rel="noreferrer noopener" 
+>CoreOS</a> . So I like automating things,
+especially testing and building. One of the more annoying things about
+using a framework like SFML is that there is not a lot of documentation
+on testing them. Don't get me wrong, I'm really loving SFML and its
+community, especially the IRC channel. But in asking if anyone there
+used anything like Travis to automate their builds, there were only a
+few that did, and even then, it was all hacked together and not easily
+replicable.</p>
+<p>I want to share my working Travis config for my SFML project so that
+anyone else out there could have at least a starting point.</p>
+<pre tabindex="0"><code>language: cpp
+dist: trusty
+sudo: required
+compiler:
+  - gcc
+
+before_script:
+  - wget https://www.sfml-dev.org/files/SFML-2.3.2-linux-gcc-64-bit.tar.gz -O /tmp/sfml.tar.gz
+  - tar -xvf /tmp/sfml.tar.gz
+  - sudo cp -r SFML-2.3.2/* /usr/
+  - wget http://www.bromeon.ch/libraries/thor/download/v2.0/thor-v2.0-linux64-make.tar.gz -O /tmp/thor.tar.gz
+  - tar -xvf /tmp/thor.tar.gz
+  - sudo cp -r thor-v2.0-linux64-make/* /usr/
+  - sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1 
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update
+  - sudo apt-get install g++-4.9
+  - cd src
+
+script: make travis
+</code></pre><p>So lets break this down a little.</p>
+<pre tabindex="0"><code>laguage: cpp
+dist: trusty
+sudo: required
+compiler:
+  - gcc
+</code></pre><p>The language is CPP, assuming that's what you're using for SFML. The
+distro is trusty, because there are a few packages that don't exist or
+work properly on 12.04 (default for travis) that we need. Sudo is
+required due to some commands you'll see in the next block, and I'm
+using gcc, (well, really g++). Nothing there too out of the ordinary.</p>
+<pre tabindex="0"><code>before_script:
+  - wget https://www.sfml-dev.org/files/SFML-2.3.2-linux-gcc-64-bit.tar.gz -O /tmp/sfml.tar.gz
+  - tar -xvf /tmp/sfml.tar.gz
+  - sudo cp -r SFML-2.3.2/* /usr/
+  - wget http://www.bromeon.ch/libraries/thor/download/v2.0/thor-v2.0-linux64-make.tar.gz -O /tmp/thor.tar.gz
+  - tar -xvf /tmp/thor.tar.gz
+  - sudo cp -r thor-v2.0-linux64-make/* /usr/
+</code></pre><p>Ubuntu does have an SFML package, but its too low of a version for me,
+so I manually install the version I want. I'm also using Thor, a
+library built for SFML, so I also manually install that. This is the
+method I recommend for installing the SFML binaries because it ensures
+exactly what version you'll get. You can also compile it yourself if
+you really want to, but I won't cover that here.</p>
+<pre tabindex="0"><code>- sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 libxcb-image0 libxcb-randr0 libudev1 
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+- sudo apt-get update
+- sudo apt-get install g++-4.9
+</code></pre><p>First, we install all the dependencies for SFML and Thor. libudev1 and
+the xcb packages gave me a lot of trouble, which is why I tried using
+trusty. So here's where I banged my head against the wall for a while.
+I kept getting errors about udev and undefined references on travis that
+I wasn't getting locally. Turns out, even on trusty, the default g++ is
+4.8, but 4.9 or greater is needed for udev to work (I guess?).
+Installing 4.9 fixed everything and my project compiled cleanly.</p>
+<pre tabindex="0"><code>script: make travis
+</code></pre><p>Now, just run your make script or whatever your equivalent is. I made a
+separate target that specifically uses g++-4.9, but other than that, the
+target is identical to my default target.</p>
+<p>Hopefully, this will help someone out there who wants to automate their
+SFML build.</p>
+
+
+              
+          </article>
+          
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://fahlman.dev/posts/old/2016/animation/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">Animation</span>
+    </a>
+  
+
+  
+    <a class="pagination__item" href="https://fahlman.dev/posts/old/2017/graphing_snmp_data_with_prometheus_and_grafana/">
+      <span class="pagination__label">Next Post</span>
+      <span class="pagination__title" >Graphing SNMP data with Prometheus and Grafana</span>
+    </a>
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="GitHub"
+        href="https://github.com/fahlmant"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/github.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Twitter"
+        href="https://twitter.com/taylorfahlman"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/twitter.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Email"
+        href="mailto:taylor@fahlman.dev"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/email.svg')"></div>
+      </a>
+    
+     
+</div>
+
+            <p></p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+    
+
+  </main>
+
+   
+
+  
+  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+</body>
+
+</html>
