@@ -1,7 +1,7 @@
 baseURL = "https://fahlman.dev"
 languageCode = "en-us"
 title = "Taylor Fahlman"
-#theme = "gihugo-theme-codex"
+theme = "hugo-theme-codex"
 
 [params]
   twitter = "https://twitter.com/taylorfahlman"
