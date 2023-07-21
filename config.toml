@@ -32,3 +32,9 @@ theme = "hugo-theme-codex"
     name = "resume"
     title = "Resume"
     url = "/resume"
+
+[module]
+
+  [[module.imports]]
+    path = "github.com/jakewies/hugo-theme-codex"
+    disable=false
