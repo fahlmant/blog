@@ -41,7 +41,7 @@ and coordinates. It then takes the resulting slice of the image file and
 add it to a std::map with the string as its id. So when applying a
 texture, it looks something like
 
-``` {.sourceCode .c++}
+```
 playerSprite.setTexture(this->textureManager.getRef("right"));
 ```
 

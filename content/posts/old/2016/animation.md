@@ -11,7 +11,7 @@ I\'m just using the Animation component.
 Before this, I manually moved the sprite\'s position every time I
 pressed an arrow key. It looked something like
 
-``` {.sourceCode .c++}
+```
 case sf::Event::KeyPressed:
     {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
@@ -32,7 +32,7 @@ without some sort of counter and change to how I handled textures was
 going to be hard and tedious. But Thor\'s animation makes this much
 easier. First you load the animations
 
-``` {.sourceCode .c++}
+```
 Thor::FrameAnimation playerDown;
 Thor::Animator animator;
 
@@ -50,7 +50,7 @@ need, with a reference by a string similar to how the texture manager
 works, and a duration. Now our input handling block will play the
 animation
 
-``` {.sourceCode .c++}
+```
 case sf::Event::KeyPressed:
     {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
