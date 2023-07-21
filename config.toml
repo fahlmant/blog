@@ -1,0 +1,34 @@
+baseURL = "https://fahlman.dev"
+languageCode = "en-us"
+title = "Taylor Fahlman"
+theme = "hugo-theme-codex"
+
+[params]
+  twitter = "https://twitter.com/taylorfahlman"
+  github = "https://github.com/fahlmant"
+  email = "mailto:taylor@fahlman.dev"
+  # ...
+
+  iconOrder = ["GitHub", "Twitter", "Email"]
+  showPageTitleInTOC = true
+
+[[menu.main]]
+    identifier = "home"
+    name = "home"
+    title = "Home - Taylor Fahlman"
+    url = "/"
+[[menu.main]]
+    identifier = "about"
+    name = "about"
+    title = "About"
+    url = "/about"
+[[menu.main]]
+    identifier = "posts"
+    name = "posts"
+    title = "Posts"
+    url = "/posts"
+[[menu.main]]
+    identifier = "resume"
+    name = "resume"
+    title = "Resume"
+    url = "/resume"

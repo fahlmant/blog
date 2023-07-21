@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <title>Graphing SNMP data with Prometheus and Grafana | Taylor Fahlman</title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Graphing SNMP data with Prometheus and Grafana" />
+  <meta name="twitter:description" content=""/>
+  <meta name="twitter:site" content="https://twitter.com/taylorfahlman" />
+  <meta name="twitter:creator" content="https://twitter.com/taylorfahlman" />
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+
+  
+  
+    
+ 
+  
+  
+  
+  
+  
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/custom.min.1a24c00ffbc3447cfec89732e77537056ba832bc1eae415d446372922f208302.css" integrity="sha256-GiTAD/vDRHz&#43;yJcy53U3BWuoMrwerkFdRGNyki8ggwI="/>
+  
+  
+   
+   
+    
+
+<script type="application/ld+json">
+  
+    { 
+      "@context": "http://schema.org", 
+      "@type": "WebSite", 
+      "url": "https:\/\/fahlman.dev\/posts\/old\/2017\/graphing_snmp_data_with_prometheus_and_grafana\/",
+      "name": "Graphing SNMP data with Prometheus and Grafana",
+      "author": {
+        "@type": "Person",
+        "name": ""
+      },
+      "description": ""
+    }
+  
+  </script>
+</head>
+
+<body>
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+ 
+
+  <nav class="nav" id="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/posts">posts</a>
+      </li>
+    
+      <li>
+        <a  href="/resume">resume</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">Graphing SNMP data with Prometheus and Grafana</h1>
+            <time datetime="2017-08-04 00:00:00 &#43;0000 UTC" class="post__date">Aug 4 2017</time> 
+          </header>
+          <article class="post__content">
+              
+<h1 id="graphing-snmp-data-with-prometheus-and-grafana">Graphing SNMP data with Prometheus and Grafana</h1>
+<p>This summer, I've been an intern on the Infrastructure team at CoreOS,
+and this week marks the halfway point. I've been learning lots and
+doing some really interesting work. My latest project revolves around
+getting some metrics about the office network set up, using SNMP,
+Prometheus and Grafana.</p>
+<h2 id="snmp">SNMP<a class="anchor" href="#snmp">#</a></h2>
+<p>The first step was learning about SNMP. For those of you who haven't
+heard of SNMP before, it's a protocol that came about in the late
+80's, used for getting and modifying information about a managed
+device. It uses OIDs, which are allocated to different organizations,
+such as Cisco, who then in turn define their subset of OIDs in a MIB,
+which SNMP uses to know how to parse the information. Here's an example
+of a request to a host with some OID</p>
+<pre tabindex="0"><code>$ snmpget -v 2c -c public hostname 1.3.6.1.2.1.2.2.1.10.21
+IF-MIB::ifInOctets.21 = Counter32: 17202468
+</code></pre><p>Using snmpget (from the net-snmp package), version 2c of SNMP and the
+community string 'public', we request information associated with the
+OID 1.3.6.1.2.1.2.2.1.10.21. I had to look up this OID, and I'm just
+using it as an example of what an OID looks like. Usually, the string of
+the OID is easier for individual requests. But you can see below the
+command, in the response, what that OID resolved to.
+IF-MIB::ifInOctets.21 breaks down to the Interface MIB, or IF-MIB, then
+using that MIB, to the number of octets on some interface, in this case
+physical port 21 (this particular host is a switch). If you have some
+host that supports SNMP version 2 or 3, try the following command to see
+most of the OIDs your host knows about, assuming that the default
+community string is 'public' (which is standard):
+snmpwalk -v 2c -c public hostname.</p>
+<h2 id="prometheus">Prometheus<a class="anchor" href="#prometheus">#</a></h2>
+<p>With a base of SNMP understanding, now we can start getting some
+metrics. We'll need Prometheus and the Prometheus SNMP Exporter. I want
+to run them in docker, and have them talk to each other. This is simple
+with something like Kubernetes, but for my proof-of-concept, I set up a
+docker bridge network, and put both containers on it.</p>
+<pre tabindex="0"><code>$ docker network create --driver bridge prometheus
+$ docker run --network=prometheus -d -p 9116:9116 quay.io/taylor_fahlman/prom_snmp_exporter
+$ docker run --network=prometheus -d -p 9090:9090 -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+</code></pre><p>And here's the `prometheus.yml`:</p>
+<pre tabindex="0"><code>global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: &#39;snmp&#39;
+    static_configs:
+      - targets:
+        - hostname # Target SNMP device.
+    metrics_path: /snmp
+    params:
+      module: [default]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.18.0.3:9116  # Docker IP with SNMP exporter.
+</code></pre><p>I found the correct bridge IP for the SNMP exporter container by running
+docker network inspect prometheus. Just replace 172.18.0.3 whatever the
+IP is. Now I could see info about the scrapes Prometheus was making at
+http://dockerhostname:9090/consoles/snmp.html. It showed the device,
+which should be the same as the host or IP under targets, if it was up,
+Ports Up, Ports Total, Mb/s in, out, discard and errors. That's a lot
+of metrics just from a default setup! There's a great tool that goes
+along with SNMP exporter that generates the config so if you want to
+make your own module that handles certain Cisco MIBs and Supermicro
+MIBs, its easy. You can find that tool
+<a href="https://github.com/prometheus/snmp_exporter/tree/master/generator" 
+  
+   target="_blank" rel="noreferrer noopener" 
+>here</a>.</p>
+<p>Now I have metrics about the target host in a time series. What better
+way to analyze that data then by graphing it?</p>
+<h2 id="grafana">Grafana<a class="anchor" href="#grafana">#</a></h2>
+<p>This part is super easy. Spin up a Grafana container on the same bridge:</p>
+<pre tabindex="0"><code>$ docker run --network=prometheus -d -p 3000:3000 grafana/grafana
+</code></pre><p>Follow the docs to log in and set up a Prometheus data source. Then,
+import <a href="https://grafana.com/dashboards/1124" 
+  
+   target="_blank" rel="noreferrer noopener" 
+>this</a> as a Dashboard.
+Assuming everything was set up right, there should be a graph for each
+port on your device, automatically labeled, and probably a few data
+points already graphed. In my case, it worked out of the gate for most
+hosts, but I had a few that required SNMP v1 for some reason so I had to
+tinker. But for SNMP 2 and 3, that template just works at time of
+writing.</p>
+<h2 id="conclusion">Conclusion<a class="anchor" href="#conclusion">#</a></h2>
+<p>SNMP is actually really useful, even if most people think its old. Using
+that data, I can now easily tell when certain ports on a switch are
+spiking in traffic, which ones get more inbound traffic, which get more
+outbound traffic, and in general make better hypothesis about network
+issues in the office. Prometheus and Grafana were a breeze to set up,
+and are incredibly powerful tools that I've barely scratched the
+surface of.</p>
+
+
+              
+          </article>
+          
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://fahlman.dev/posts/old/2017/travis_and_sfml/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">Travis and SFML</span>
+    </a>
+  
+
+  
+    <a class="pagination__item" href="https://fahlman.dev/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/">
+      <span class="pagination__label">Next Post</span>
+      <span class="pagination__title" >Using Mattermost as a receiver for Alertmanager</span>
+    </a>
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="GitHub"
+        href="https://github.com/fahlmant"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/github.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Twitter"
+        href="https://twitter.com/taylorfahlman"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/twitter.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Email"
+        href="mailto:taylor@fahlman.dev"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/email.svg')"></div>
+      </a>
+    
+     
+</div>
+
+            <p></p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+    
+
+  </main>
+
+   
+
+  
+  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+</body>
+
+</html>
