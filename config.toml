@@ -1,7 +1,7 @@
 baseURL = "https://fahlman.dev"
 languageCode = "en-us"
 title = "Taylor Fahlman"
-# theme = "hugo-theme-codex"
+theme = "hugo-theme-codex"
 
 [params]
   twitter = "https://twitter.com/taylorfahlman"
@@ -32,9 +32,3 @@ title = "Taylor Fahlman"
     name = "resume"
     title = "Resume"
     url = "/resume"
-
-[module]
-
-  [[module.imports]]
-    path = "github.com/jakewies/hugo-theme-codex"
-    disable=false
