@@ -6,7 +6,17 @@
     <description>Recent content on Taylor Fahlman</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Aug 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://fahlman.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Mar 2021 11:51:25 -0700</lastBuildDate><atom:link href="https://fahlman.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using an existing VPC with OpenShift</title>
+      <link>https://fahlman.dev/posts/byoc-vpc-openshift/</link>
+      <pubDate>Wed, 24 Mar 2021 11:51:25 -0700</pubDate>
+      
+      <guid>https://fahlman.dev/posts/byoc-vpc-openshift/</guid>
+      <description>OpenShift Dedicated recently enabled installing an OpenShift cluster into an existing AWS VPC (aka BYO VPC). While testing this out, I couldn’t find much documentation around how the VPC should be set up other than a few points:
+The VPC should have dnsHostnames enabled There should be a public subnet (per AZ the cluster is in) There should be a private subnet (per AZ the cluster is in) The first point is fairly straight forward, but the other two are somewhat vauge.</description>
+    </item>
+    
     <item>
       <title>Using Mattermost as a receiver for Alertmanager</title>
       <link>https://fahlman.dev/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/</link>

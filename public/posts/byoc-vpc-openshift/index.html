@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <title>Using an existing VPC with OpenShift | Taylor Fahlman</title>
+
+  <meta charset="UTF-8">
+  <meta name="language" content="en">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  
+  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Using an existing VPC with OpenShift" />
+  <meta name="twitter:description" content=""/>
+  <meta name="twitter:site" content="https://twitter.com/taylorfahlman" />
+  <meta name="twitter:creator" content="https://twitter.com/taylorfahlman" />
+  
+
+  <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+
+
+  
+  
+    
+ 
+  
+  
+  
+  
+  
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
+  
+    
+    <link type="text/css" rel="stylesheet" href="/css/custom.min.1a24c00ffbc3447cfec89732e77537056ba832bc1eae415d446372922f208302.css" integrity="sha256-GiTAD/vDRHz&#43;yJcy53U3BWuoMrwerkFdRGNyki8ggwI="/>
+  
+  
+   
+   
+    
+
+<script type="application/ld+json">
+  
+    { 
+      "@context": "http://schema.org", 
+      "@type": "WebSite", 
+      "url": "https:\/\/fahlman.dev\/posts\/byoc-vpc-openshift\/",
+      "name": "Using an existing VPC with OpenShift",
+      "author": {
+        "@type": "Person",
+        "name": ""
+      },
+      "description": ""
+    }
+  
+  </script>
+</head>
+
+<body>
+  <div class="burger__container">
+  <div class="burger" aria-controls="navigation" aria-label="Menu">
+    <div class="burger__meat burger__meat--1"></div>
+    <div class="burger__meat burger__meat--2"></div>
+    <div class="burger__meat burger__meat--3"></div>
+  </div>
+</div>
+ 
+
+  <nav class="nav" id="navigation">
+  <ul class="nav__list">
+    
+    
+      <li>
+        <a  href="/about">about</a>
+      </li>
+    
+      <li>
+        <a  href="/">home</a>
+      </li>
+    
+      <li>
+        <a  class="active"
+         href="/posts">posts</a>
+      </li>
+    
+      <li>
+        <a  href="/resume">resume</a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+  <main>
+    
+    
+
+    <div class="flex-wrapper">
+      <div class="post__container">
+        <div class="post">
+          <header class="post__header">
+            <h1 id="post__title">Using an existing VPC with OpenShift</h1>
+            <time datetime="2021-03-24 11:51:25 -0700 PDT" class="post__date">Mar 24 2021</time> 
+          </header>
+          <article class="post__content">
+              
+<p>OpenShift Dedicated recently enabled installing an OpenShift cluster into an existing AWS VPC (aka BYO VPC). While testing this out, I couldn’t find much documentation around how the VPC should be set up other than a few points:</p>
+<ul>
+<li>The VPC should have dnsHostnames enabled</li>
+<li>There should be a public subnet (per AZ the cluster is in)</li>
+<li>There should be a private subnet (per AZ the cluster is in)</li>
+</ul>
+<p>The first point is fairly straight forward, but the other two are somewhat vauge. What is considered a public subnet and what is considered a private subnet? What other resources in AWS are required to make those requirements fufilled?
+It took me several days of trying and failing to install a cluster into a BYO VPC before I finally figured out a correct configuration. Here’s what I found:
+For this example, I will only be describing a single-az setup, specifically us-east-1a. First, create the VPC, give it a name, and give it a resonable CIDR range, like 10.0.0.0/16. You also need to enable DNS Hostnames.</p>
+<pre tabindex="0"><code>$ aws ec2 create-vpc --cidr-block 10.0.0.0/16
+$ aws ec2 modify-vpc-attribute --vpc-id $VPC_ID --enable-dns-hostnames
+</code></pre><p>Great, point one of our requirements are met! Now for the subnets.</p>
+<p>In AWS, a “public” subnet is a subnet that can send outbound traffic directly to the internet. To do this, an Internet Gateway is used.
+Create the Internet Gateway and attach it to the VPC</p>
+<pre tabindex="0"><code>$ aws ec2 create-internet-gateway
+$ aws ec2 attach-internet-gateway --vpc-id $VPC_ID --internet-gateway-id $IGW_ID
+</code></pre><p>Now create a subnet with some reasonable amount of IPs from the VPC CIDR. I used a /17 for simplicity, but smaller ranges can be used.</p>
+<pre tabindex="0"><code>$ aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.0.0/17
+</code></pre><p>To allow this subnet to use the Internet Gateway, create a Route Table, associate the subnet with it, and create a routing rule for 0.0.0.0/0 -&gt; Internet Gateway</p>
+<pre tabindex="0"><code>$ aws ec2 create-route-table --vpc-id $VPC_ID
+$ aws ec2 associate-route-table --route-table-id $PUB_RT_ID --subnet-id $PUB_SUBNET_ID
+$ aws ec2 create-route --route-table-id $PUB_RT_ID --destination-cidr-block 0.0.0.0/0 --gateway-id $IGW_ID
+</code></pre><p>Nice, now you have a public subnet and point two of our requirements is met. Finally for the private subnet.
+In AWS, a private subnet doesn’t have direct access to the internet, and the internet does not have direct access to it. Instead, the private subnet access the internet through a NAT Gateway from within the public subnet. This allows anything in the private subnet to still be able to access the internet for updates and connections, but protects from access to the subnet initiated from the public internet.
+To create our private subnet, we first need to allocate an EIP, and create a NAT Gateway in the public subnet with that EIP.</p>
+<pre tabindex="0"><code>$ aws ec2 allocate-address
+$ aws ec2 create-nat-gateway --subnet-id $PUB_SUB_ID --allocation-id $EIP_ID
+</code></pre><p>Now we can create the private subnet. I also gave it a /17 CIDR but again this can be smaller</p>
+<pre tabindex="0"><code>$ aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.128.0/17
+$ aws ec2 create-route-table --vpc-id $VPC_ID
+$ aws ec2 associate-route-table --route-table-id $PRV_RT_ID --subnet-id $PRV_SUBNET_ID
+$ aws ec2 create-route --route-table-id $PRV_RT_ID --destination-cidr-block 0.0.0.0/0 --nat-gateway-id $NAT_GW_ID
+</code></pre><p>And that’s all we need! All three points are met, and we can now use this VPC to create an OpenShift cluster.</p>
+
+
+              
+          </article>
+          
+
+ <div class="pagination">
+  
+    <a class="pagination__item" href="https://fahlman.dev/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/">
+        <span class="pagination__label">Previous Post</span>
+        <span class="pagination__title">Using Mattermost as a receiver for Alertmanager</span>
+    </a>
+  
+
+  
+</div>
+
+          
+          <footer class="post__footer">
+            
+
+
+<div class="social-icons">
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="GitHub"
+        href="https://github.com/fahlmant"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/github.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Twitter"
+        href="https://twitter.com/taylorfahlman"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/twitter.svg')"></div>
+      </a>
+    
+  
+     
+    
+      <a
+        class="social-icons__link"
+        title="Email"
+        href="mailto:taylor@fahlman.dev"
+        target="_blank"
+        rel="me noopener"
+      >
+        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/email.svg')"></div>
+      </a>
+    
+     
+</div>
+
+            <p></p>
+          </footer>
+          </div>
+      </div>
+      
+    </div>
+    
+
+  </main>
+
+   
+
+  
+  <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
+  
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
+
+  
+  <script src="https://unpkg.com/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"
+    data-autoloader-path="https://unpkg.com/prismjs@1.20.0/components/"></script>
+
+  
+
+
+</body>
+
+</html>
