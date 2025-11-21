@@ -40,6 +40,16 @@
   {{ end }}
   {{ block "links" . }} {{ end }}
   {{ partial "seo-schema.html" .}}
+
+  <!-- Inline theme initialization to prevent flash -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 
 <body>
@@ -57,7 +67,7 @@
   <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity | safeHTMLAttr }}" crossorigin="anonymous"></script>
 
   <!-- Dark mode toggle script -->
-  <script src="{{ "js/theme-toggle.js" | absURL }}"></script>
+  <script src="{{ "js/theme-toggle.js" | relURL }}"></script>
 
   {{ block "scripts" . }} {{ end }}
 </body>

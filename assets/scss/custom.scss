@@ -16,6 +16,10 @@
   --nav-hover-table-bg: #f6f9fc;
   --border-color: #e1e4e8;
   --toc-active-color: #333;
+  --footer-bg: #fff;
+  --footer-text: #9b9b9b;
+  --post-title-color: #111;
+  --pagination-title-color: #111;
 }
 
 [data-theme="dark"] {
@@ -33,6 +37,10 @@
   --nav-hover-table-bg: #252525;
   --border-color: #404040;
   --toc-active-color: #fff;
+  --footer-bg: #1a1a1a;
+  --footer-text: #a0a0a0;
+  --post-title-color: #e4e4e4;
+  --pagination-title-color: #e4e4e4;
 }
 
 // Apply dark mode colors
@@ -146,4 +154,34 @@ blockquote {
 // Keep the fancy class
 .fancy {
   color: #f00530;
+}
+
+// Post titles in lists
+.post__title a {
+  color: var(--post-title-color);
+  transition: color 0.3s ease;
+}
+
+// Footer
+footer,
+.post__footer {
+  background: var(--footer-bg);
+  transition: background-color 0.3s ease;
+
+  p {
+    color: var(--footer-text);
+    transition: color 0.3s ease;
+  }
+}
+
+// Pagination
+.pagination__item {
+  &:hover {
+    background-color: transparent !important;
+  }
+}
+
+.pagination__title {
+  color: var(--pagination-title-color);
+  transition: color 0.3s ease;
 }

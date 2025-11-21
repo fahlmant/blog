@@ -2,13 +2,14 @@
 (function() {
   'use strict';
 
-  // Initialize theme from localStorage or system preference
-  function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-
-    setTheme(theme, false);
+  // Update button icon based on current theme
+  function updateButton() {
+    const button = document.querySelector('.theme-toggle');
+    if (button) {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      button.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+      button.setAttribute('aria-label', currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
   }
 
   // Set theme and optionally save to localStorage
@@ -19,12 +20,7 @@
       localStorage.setItem('theme', theme);
     }
 
-    // Update button icon if it exists
-    const button = document.querySelector('.theme-toggle');
-    if (button) {
-      button.textContent = theme === 'dark' ? '☀️' : '🌙';
-      button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-    }
+    updateButton();
   }
 
   // Toggle between light and dark themes
@@ -42,14 +38,14 @@
     }
   }
 
-  // Initialize on DOM ready
+  // Initialize on DOM ready - just update the button, theme is already set in head
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
-      initTheme();
+      updateButton();
       attachToggleListener();
     });
   } else {
-    initTheme();
+    updateButton();
     attachToggleListener();
   }
 
