@@ -27,21 +27,21 @@
   
   
     
- 
+
   
   
+
   
-  
-  
-  
-    
-    <link type="text/css" rel="stylesheet" href="/css/post.min.86d1effd4c412b85ac13db53a90c473a0f256f789b821e131125c9aa25cb6a6d.css" integrity="sha256-htHv/UxBK4WsE9tTqQxHOg8lb3ibgh4TESXJqiXLam0="/>
+
   
     
-    <link type="text/css" rel="stylesheet" href="/css/custom.min.1a24c00ffbc3447cfec89732e77537056ba832bc1eae415d446372922f208302.css" integrity="sha256-GiTAD/vDRHz&#43;yJcy53U3BWuoMrwerkFdRGNyki8ggwI="/>
+    <link type="text/css" rel="stylesheet" href="/css/post.min.56c8810b0f07bc4b6fe3dd802a8194d08a2ed5a4903bdf2a4859c17f3860a7e7.css" integrity="sha256-VsiBCw8HvEtv492AKoGU0Iou1aSQO98qSFnBfzhgp&#43;c="/>
   
+    
+    <link type="text/css" rel="stylesheet" href="/css/custom.min.a24fafd0fc7a238d406f460a58d760babac9c3e3b1cf81f57ed477242b0064d3.css" integrity="sha256-ok&#43;v0Px6I41Ab0YKWNdgurrJw&#43;Oxz4H1ftR3JCsAZNM="/>
   
-   
+
+  
    
     
 
@@ -50,7 +50,7 @@
     { 
       "@context": "http://schema.org", 
       "@type": "WebSite", 
-      "url": "https:\/\/fahlman.dev\/posts\/old\/2015\/useful_ssl_openssl_commands\/",
+      "url": "https:\/\/taylorfahlman.com\/posts\/old\/2015\/useful_ssl_openssl_commands\/",
       "name": "Useful OpenSSL Commands",
       "author": {
         "@type": "Person",
@@ -59,6 +59,17 @@
       "description": ""
     }
   
+  </script>
+
+
+  
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
   </script>
 </head>
 
@@ -70,7 +81,7 @@
     <div class="burger__meat burger__meat--3"></div>
   </div>
 </div>
- 
+
 
   <nav class="nav" id="navigation">
   <ul class="nav__list">
@@ -93,6 +104,9 @@
         <a  href="/resume">resume</a>
       </li>
     
+    <li>
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
+    </li>
   </ul>
 </nav>
 
@@ -129,16 +143,18 @@
           </article>
           
 
- <div class="pagination">
+ 
+<div class="pagination">
   
 
   
-    <a class="pagination__item" href="https://fahlman.dev/posts/old/2015/enable_rust_on_osu_servers/">
+    <a class="pagination__item" href="https://taylorfahlman.com/posts/old/2015/enable_rust_on_osu_servers/">
       <span class="pagination__label">Next Post</span>
       <span class="pagination__title" >Enable Rust on OSU Servers</span>
     </a>
   
 </div>
+
 
           
           <footer class="post__footer">
@@ -156,7 +172,7 @@
         target="_blank"
         rel="me noopener"
       >
-        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/github.svg')"></div>
+        <div class="social-icons__icon" style="background-image: url('https://taylorfahlman.com/svg/github.svg')"></div>
       </a>
     
   
@@ -169,7 +185,7 @@
         target="_blank"
         rel="me noopener"
       >
-        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/twitter.svg')"></div>
+        <div class="social-icons__icon" style="background-image: url('https://taylorfahlman.com/svg/twitter.svg')"></div>
       </a>
     
   
@@ -182,7 +198,7 @@
         target="_blank"
         rel="me noopener"
       >
-        <div class="social-icons__icon" style="background-image: url('https://fahlman.dev/svg/email.svg')"></div>
+        <div class="social-icons__icon" style="background-image: url('https://taylorfahlman.com/svg/email.svg')"></div>
       </a>
     
      
@@ -202,6 +218,10 @@
 
   
   <script src="/js/index.min.301a8b0870381bf76b3b5182e8966d363a0474281183439beb024d8b8228fc66.js" integrity="sha256-MBqLCHA4G/drO1GC6JZtNjoEdCgRg0Ob6wJNi4Io/GY=" crossorigin="anonymous"></script>
+
+  
+  <script src="/js/theme-toggle.js"></script>
+
   
   
   <script src="https://unpkg.com/prismjs@1.20.0/components/prism-core.min.js"></script>
