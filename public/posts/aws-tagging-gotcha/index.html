@@ -156,11 +156,11 @@ $ aws ec2 delete-tags --resource-id $SUBNET_ID --tags Key=bar
 ec2:DeleteTags action`
 </code></pre><p>Everything as expected so far. But what if you don&rsquo;t specify a specific tag to delete?</p>
 <pre tabindex="0"><code>$ aws ec2 delete-tags --resource-id $SUBNET_ID
-</code></pre><p>This deletes every tag on the subnet, which is not what we want!</p>
+</code></pre><p>This uses our policy to delete every tag on the subnet, which is not what we want!</p>
 <p>After digging through the AWS docs, I found that this behavior seems to be expected, and they have <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html#access_tags_control-tag-keys" 
   
    target="_blank" rel="noreferrer noopener" 
->an example</a> where they recommend adding an additional condition to prevent passing a request with no tags specified. To fix this, we need to update our condition to include a null check. In our example, the condition then becomes</p>
+>an example</a> where they recommend adding an additional condition to prevent passing a request with no tags specified. To fix this in our policy, we need to update our condition to include a null check. In our example, the condition then becomes</p>
 <pre tabindex="0"><code>        &#34;Condition&#34;: {
             &#34;ForAllValues:StringLike&#34;: {
                 &#34;aws:TagKeys&#34;: [
@@ -171,8 +171,8 @@ ec2:DeleteTags action`
                 &#34;aws:TagKeys&#34;: &#34;false&#34;
             }
         }
-</code></pre><p>And that&rsquo;s it! With this additional condition in place, <code>$ aws ec2 delete-tags --resource-id $SUBNET_ID</code> now fails as expected, protecting all tags on the subnet from being accidentally deleted.</p>
-<p>This one took me a while to figure out. You&rsquo;d expect that restricting deletions to specific tag keys would cover all cases, but AWS treats an empty delete-tags request differently and will happily remove everything. If you&rsquo;re working with tag-based IAM policies, it&rsquo;s worth double-checking that you have this Null condition in place to avoid any surprises.</p>
+</code></pre><p>With this additional condition in place, <code>$ aws ec2 delete-tags --resource-id $SUBNET_ID</code> now fails as expected, protecting all tags on the subnet from being accidentally deleted in one go.</p>
+<p>You&rsquo;d expect that restricting deletions to specific tag keys would cover all cases, but AWS treats an empty delete-tags request differently and will happily remove everything. If you&rsquo;re working with tag-based IAM policies, it&rsquo;s worth double-checking that you have this Null condition in place to avoid any surprises.</p>
 
 
               
