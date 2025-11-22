@@ -6,8 +6,15 @@
     <description>Recent content on Taylor Fahlman</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Mar 2021 11:51:25 -0700</lastBuildDate>
+    <lastBuildDate>Thu, 20 Nov 2025 16:46:35 -0800</lastBuildDate>
     <atom:link href="https://taylorfahlman.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AWS Tagging Gotcha</title>
+      <link>https://taylorfahlman.com/posts/aws-tagging-gotcha/</link>
+      <pubDate>Thu, 20 Nov 2025 16:46:35 -0800</pubDate>
+      <guid>https://taylorfahlman.com/posts/aws-tagging-gotcha/</guid>
+      <description>&lt;p&gt;Recently while working on some AWS policies, I discovered a tricky gotcha in how the DeleteTags action works with conditioning. It took me a bit of head-scratching to figure out what was going on, so I wanted to share what I learned.&lt;/p&gt;&#xA;&lt;p&gt;Let&amp;rsquo;s say we have an AWS policy with one statement:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;&amp;#34;Statement&amp;#34;: [&#xA;    {&#xA;        &amp;#34;Sid&amp;#34;: &amp;#34;DeleteTagFoo&amp;#34;,&#xA;        &amp;#34;Effect&amp;#34;: &amp;#34;Allow&amp;#34;,&#xA;        &amp;#34;Action&amp;#34;: [&#xA;            &amp;#34;ec2:DeleteTags&amp;#34;&#xA;        ],&#xA;        &amp;#34;Resource&amp;#34;: [&#xA;            &amp;#34;arn:aws:ec2:*:*:subnet/*&amp;#34;&#xA;        ],&#xA;        &amp;#34;Condition&amp;#34;: {&#xA;            &amp;#34;ForAllValues:StringLike&amp;#34;: {&#xA;                &amp;#34;aws:TagKeys&amp;#34;: [&#xA;                    &amp;#34;foo&amp;#34;&#xA;                ]&#xA;            }&#xA;        }&#xA;    }&#xA;]&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The effect here should be that deleting a tag with the key &amp;ldquo;foo&amp;rdquo;, and only that tag, should be allowed on any subnet.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Using an existing VPC with OpenShift</title>
       <link>https://taylorfahlman.com/posts/byoc-vpc-openshift/</link>

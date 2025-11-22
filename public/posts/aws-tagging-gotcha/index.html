@@ -2,7 +2,7 @@
 <html lang="en-us">
 
 <head>
-  <title>Using an existing VPC with OpenShift | Taylor Fahlman</title>
+  <title>AWS Tagging Gotcha | Taylor Fahlman</title>
 
   <meta charset="UTF-8">
   <meta name="language" content="en">
@@ -15,7 +15,7 @@
   
   
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Using an existing VPC with OpenShift" />
+  <meta name="twitter:title" content="AWS Tagging Gotcha" />
   <meta name="twitter:description" content=""/>
   <meta name="twitter:site" content="https://twitter.com/taylorfahlman" />
   <meta name="twitter:creator" content="https://twitter.com/taylorfahlman" />
@@ -50,8 +50,8 @@
     { 
       "@context": "http://schema.org", 
       "@type": "WebSite", 
-      "url": "https:\/\/taylorfahlman.com\/posts\/byoc-vpc-openshift\/",
-      "name": "Using an existing VPC with OpenShift",
+      "url": "https:\/\/taylorfahlman.com\/posts\/aws-tagging-gotcha\/",
+      "name": "AWS Tagging Gotcha",
       "author": {
         "@type": "Person",
         "name": ""
@@ -119,44 +119,60 @@
       <div class="post__container">
         <div class="post">
           <header class="post__header">
-            <h1 id="post__title">Using an existing VPC with OpenShift</h1>
-            <time datetime="2021-03-24 11:51:25 -0700 PDT" class="post__date">Mar 24 2021</time> 
+            <h1 id="post__title">AWS Tagging Gotcha</h1>
+            <time datetime="2025-11-20 16:46:35 -0800 PST" class="post__date">Nov 20 2025</time> 
           </header>
           <article class="post__content">
               
-<p>OpenShift Dedicated recently enabled installing an OpenShift cluster into an existing AWS VPC (aka BYO VPC). While testing this out, I couldn’t find much documentation around how the VPC should be set up other than a few points:</p>
-<ul>
-<li>The VPC should have dnsHostnames enabled</li>
-<li>There should be a public subnet (per AZ the cluster is in)</li>
-<li>There should be a private subnet (per AZ the cluster is in)</li>
-</ul>
-<p>The first point is fairly straight forward, but the other two are somewhat vauge. What is considered a public subnet and what is considered a private subnet? What other resources in AWS are required to make those requirements fufilled?
-It took me several days of trying and failing to install a cluster into a BYO VPC before I finally figured out a correct configuration. Here’s what I found:
-For this example, I will only be describing a single-az setup, specifically us-east-1a. First, create the VPC, give it a name, and give it a resonable CIDR range, like 10.0.0.0/16. You also need to enable DNS Hostnames.</p>
-<pre tabindex="0"><code>$ aws ec2 create-vpc --cidr-block 10.0.0.0/16
-$ aws ec2 modify-vpc-attribute --vpc-id $VPC_ID --enable-dns-hostnames
-</code></pre><p>Great, point one of our requirements are met! Now for the subnets.</p>
-<p>In AWS, a “public” subnet is a subnet that can send outbound traffic directly to the internet. To do this, an Internet Gateway is used.
-Create the Internet Gateway and attach it to the VPC</p>
-<pre tabindex="0"><code>$ aws ec2 create-internet-gateway
-$ aws ec2 attach-internet-gateway --vpc-id $VPC_ID --internet-gateway-id $IGW_ID
-</code></pre><p>Now create a subnet with some reasonable amount of IPs from the VPC CIDR. I used a /17 for simplicity, but smaller ranges can be used.</p>
-<pre tabindex="0"><code>$ aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.0.0/17
-</code></pre><p>To allow this subnet to use the Internet Gateway, create a Route Table, associate the subnet with it, and create a routing rule for 0.0.0.0/0 -&gt; Internet Gateway</p>
-<pre tabindex="0"><code>$ aws ec2 create-route-table --vpc-id $VPC_ID
-$ aws ec2 associate-route-table --route-table-id $PUB_RT_ID --subnet-id $PUB_SUBNET_ID
-$ aws ec2 create-route --route-table-id $PUB_RT_ID --destination-cidr-block 0.0.0.0/0 --gateway-id $IGW_ID
-</code></pre><p>Nice, now you have a public subnet and point two of our requirements is met. Finally for the private subnet.
-In AWS, a private subnet doesn’t have direct access to the internet, and the internet does not have direct access to it. Instead, the private subnet access the internet through a NAT Gateway from within the public subnet. This allows anything in the private subnet to still be able to access the internet for updates and connections, but protects from access to the subnet initiated from the public internet.
-To create our private subnet, we first need to allocate an EIP, and create a NAT Gateway in the public subnet with that EIP.</p>
-<pre tabindex="0"><code>$ aws ec2 allocate-address
-$ aws ec2 create-nat-gateway --subnet-id $PUB_SUB_ID --allocation-id $EIP_ID
-</code></pre><p>Now we can create the private subnet. I also gave it a /17 CIDR but again this can be smaller</p>
-<pre tabindex="0"><code>$ aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.128.0/17
-$ aws ec2 create-route-table --vpc-id $VPC_ID
-$ aws ec2 associate-route-table --route-table-id $PRV_RT_ID --subnet-id $PRV_SUBNET_ID
-$ aws ec2 create-route --route-table-id $PRV_RT_ID --destination-cidr-block 0.0.0.0/0 --nat-gateway-id $NAT_GW_ID
-</code></pre><p>And that’s all we need! All three points are met, and we can now use this VPC to create an OpenShift cluster.</p>
+<p>Recently while working on some AWS policies, I discovered a tricky gotcha in how the DeleteTags action works with conditioning. It took me a bit of head-scratching to figure out what was going on, so I wanted to share what I learned.</p>
+<p>Let&rsquo;s say we have an AWS policy with one statement:</p>
+<pre tabindex="0"><code>&#34;Statement&#34;: [
+    {
+        &#34;Sid&#34;: &#34;DeleteTagFoo&#34;,
+        &#34;Effect&#34;: &#34;Allow&#34;,
+        &#34;Action&#34;: [
+            &#34;ec2:DeleteTags&#34;
+        ],
+        &#34;Resource&#34;: [
+            &#34;arn:aws:ec2:*:*:subnet/*&#34;
+        ],
+        &#34;Condition&#34;: {
+            &#34;ForAllValues:StringLike&#34;: {
+                &#34;aws:TagKeys&#34;: [
+                    &#34;foo&#34;
+                ]
+            }
+        }
+    }
+]
+</code></pre><p>The effect here should be that deleting a tag with the key &ldquo;foo&rdquo;, and only that tag, should be allowed on any subnet.</p>
+<p>And the following works as expected:</p>
+<pre tabindex="0"><code>$ aws ec2 delete-tags --resource-id $SUBNET_ID --tags Key=foo
+# This succeeds as expected, and the tag is removed from the subnet
+
+$ aws ec2 delete-tags --resource-id $SUBNET_ID --tags Key=bar
+# This fails as expected with an error of
+`$ROLE is not authorized to perform: ec2:DeleteTags on resource $RESOURCE_ID because no identity-based policy allows the
+ec2:DeleteTags action`
+</code></pre><p>Everything as expected so far. But what if you don&rsquo;t specify a specific tag to delete?</p>
+<pre tabindex="0"><code>$ aws ec2 delete-tags --resource-id $SUBNET_ID
+</code></pre><p>This deletes every tag on the subnet, which is not what we want!</p>
+<p>After digging through the AWS docs, I found that this behavior seems to be expected, and they have <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html#access_tags_control-tag-keys" 
+  
+   target="_blank" rel="noreferrer noopener" 
+>an example</a> where they recommend adding an additional condition to prevent passing a request with no tags specified. To fix this, we need to update our condition to include a null check. In our example, the condition then becomes</p>
+<pre tabindex="0"><code>        &#34;Condition&#34;: {
+            &#34;ForAllValues:StringLike&#34;: {
+                &#34;aws:TagKeys&#34;: [
+                    &#34;foo&#34;
+                ]
+            },
+            &#34;Null&#34;: {
+                &#34;aws:TagKeys&#34;: &#34;false&#34;
+            }
+        }
+</code></pre><p>And that&rsquo;s it! With this additional condition in place, <code>$ aws ec2 delete-tags --resource-id $SUBNET_ID</code> now fails as expected, protecting all tags on the subnet from being accidentally deleted.</p>
+<p>This one took me a while to figure out. You&rsquo;d expect that restricting deletions to specific tag keys would cover all cases, but AWS treats an empty delete-tags request differently and will happily remove everything. If you&rsquo;re working with tag-based IAM policies, it&rsquo;s worth double-checking that you have this Null condition in place to avoid any surprises.</p>
 
 
               
@@ -166,17 +182,12 @@ $ aws ec2 create-route --route-table-id $PRV_RT_ID --destination-cidr-block 0.0.
  
 <div class="pagination">
   
-    <a class="pagination__item" href="https://taylorfahlman.com/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/">
+    <a class="pagination__item" href="https://taylorfahlman.com/posts/byoc-vpc-openshift/">
         <span class="pagination__label">Previous Post</span>
-        <span class="pagination__title">Using Mattermost as a receiver for Alertmanager</span>
+        <span class="pagination__title">Using an existing VPC with OpenShift</span>
     </a>
   
 
-  
-    <a class="pagination__item" href="https://taylorfahlman.com/posts/aws-tagging-gotcha/">
-      <span class="pagination__label">Next Post</span>
-      <span class="pagination__title" >AWS Tagging Gotcha</span>
-    </a>
   
 </div>
 
