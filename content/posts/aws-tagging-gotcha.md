@@ -29,7 +29,7 @@ Let's say we have an AWS policy with one statement:
 ]
 ```
 
-The effect here should be that deleting a tag with the key "foo" should be allowed on any subnet.
+The effect here should be that deleting a tag with the key "foo", and only that tag, should be allowed on any subnet.
 
 And the following works as expected:
 
@@ -49,7 +49,7 @@ $ aws ec2 delete-tags --resource-id $SUBNET_ID
 ```
 This deletes every tag on the subnet, which is not what we want!
 
-After digging through the AWS docs, I found that this behavior is actually documented, and they have [an example](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html#access_tags_control-tag-keys) where they recommend adding an additional condition to prevent passing a request with no tags specified. To fix this, we need to update our condition to include a null check. In our example, the condition then becomes
+After digging through the AWS docs, I found that this behavior seems to be expected, and they have [an example](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html#access_tags_control-tag-keys) where they recommend adding an additional condition to prevent passing a request with no tags specified. To fix this, we need to update our condition to include a null check. In our example, the condition then becomes
 ```
         "Condition": {
             "ForAllValues:StringLike": {
