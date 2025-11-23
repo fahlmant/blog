@@ -156,7 +156,7 @@ $ aws ec2 delete-tags --resource-id $SUBNET_ID --tags Key=bar
 ec2:DeleteTags action`
 </code></pre><p>Everything as expected so far. But what if you don&rsquo;t specify a specific tag to delete?</p>
 <pre tabindex="0"><code>$ aws ec2 delete-tags --resource-id $SUBNET_ID
-</code></pre><p>This uses our policy to delete every tag on the subnet, which is not what we want!</p>
+</code></pre><p>This works, and uses our policy to delete every tag on the subnet, which is not what we want!</p>
 <p>After digging through the AWS docs, I found that this behavior seems to be expected, and they have <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html#access_tags_control-tag-keys" 
   
    target="_blank" rel="noreferrer noopener" 
