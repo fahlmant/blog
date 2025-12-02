@@ -2,94 +2,94 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Taylor Fahlman</title>
-    <link>https://taylorfahlman.com/</link>
+    <link>http://localhost:1313/</link>
     <description>Recent content on Taylor Fahlman</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 20 Nov 2025 16:46:35 -0800</lastBuildDate>
-    <atom:link href="https://taylorfahlman.com/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS Tagging Gotcha</title>
-      <link>https://taylorfahlman.com/posts/aws-tagging-gotcha/</link>
+      <link>http://localhost:1313/posts/aws-tagging-gotcha/</link>
       <pubDate>Thu, 20 Nov 2025 16:46:35 -0800</pubDate>
-      <guid>https://taylorfahlman.com/posts/aws-tagging-gotcha/</guid>
+      <guid>http://localhost:1313/posts/aws-tagging-gotcha/</guid>
       <description>&lt;p&gt;Recently while working on some AWS policies, I discovered a tricky gotcha in how the DeleteTags action works with conditioning. It took me a bit of head-scratching to figure out what was going on, so I wanted to share what I learned.&lt;/p&gt;&#xA;&lt;p&gt;Let&amp;rsquo;s say we have an AWS policy with one statement:&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;&amp;#34;Statement&amp;#34;: [&#xA;    {&#xA;        &amp;#34;Sid&amp;#34;: &amp;#34;DeleteTagFoo&amp;#34;,&#xA;        &amp;#34;Effect&amp;#34;: &amp;#34;Allow&amp;#34;,&#xA;        &amp;#34;Action&amp;#34;: [&#xA;            &amp;#34;ec2:DeleteTags&amp;#34;&#xA;        ],&#xA;        &amp;#34;Resource&amp;#34;: [&#xA;            &amp;#34;arn:aws:ec2:*:*:subnet/*&amp;#34;&#xA;        ],&#xA;        &amp;#34;Condition&amp;#34;: {&#xA;            &amp;#34;ForAllValues:StringLike&amp;#34;: {&#xA;                &amp;#34;aws:TagKeys&amp;#34;: [&#xA;                    &amp;#34;foo&amp;#34;&#xA;                ]&#xA;            }&#xA;        }&#xA;    }&#xA;]&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The effect here should be that deleting a tag with the key &amp;ldquo;foo&amp;rdquo;, and only that tag, should be allowed on any subnet.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Using an existing VPC with OpenShift</title>
-      <link>https://taylorfahlman.com/posts/byoc-vpc-openshift/</link>
+      <link>http://localhost:1313/posts/byoc-vpc-openshift/</link>
       <pubDate>Wed, 24 Mar 2021 11:51:25 -0700</pubDate>
-      <guid>https://taylorfahlman.com/posts/byoc-vpc-openshift/</guid>
+      <guid>http://localhost:1313/posts/byoc-vpc-openshift/</guid>
       <description>&lt;p&gt;OpenShift Dedicated recently enabled installing an OpenShift cluster into an existing AWS VPC (aka BYO VPC). While testing this out, I couldn’t find much documentation around how the VPC should be set up other than a few points:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;The VPC should have dnsHostnames enabled&lt;/li&gt;&#xA;&lt;li&gt;There should be a public subnet (per AZ the cluster is in)&lt;/li&gt;&#xA;&lt;li&gt;There should be a private subnet (per AZ the cluster is in)&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;The first point is fairly straight forward, but the other two are somewhat vauge. What is considered a public subnet and what is considered a private subnet? What other resources in AWS are required to make those requirements fufilled?&#xA;It took me several days of trying and failing to install a cluster into a BYO VPC before I finally figured out a correct configuration. Here’s what I found:&#xA;For this example, I will only be describing a single-az setup, specifically us-east-1a. First, create the VPC, give it a name, and give it a resonable CIDR range, like 10.0.0.0/16. You also need to enable DNS Hostnames.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Using Mattermost as a receiver for Alertmanager</title>
-      <link>https://taylorfahlman.com/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/</link>
+      <link>http://localhost:1313/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/</link>
       <pubDate>Wed, 01 Aug 2018 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/</guid>
+      <guid>http://localhost:1313/posts/old/2018/using_mattermost_as_a_receiver_for_alertmanager/</guid>
       <description>&lt;p&gt;While working to move to Prometheus and Alertmanager for our monitoring&#xA;lately, my team discovered that the generic &lt;code&gt;webhook_config&lt;/code&gt; in&#xA;Alertmanager does not work with a Mattermost webhook. The JSON included&#xA;in the POST from Alertmanager causes Mattermost to return a 400, and the&#xA;lack of flexibility in Alertmanager leaves a lot to be desired. Luckily,&#xA;Mattermost webhooks translate Slack webhooks natively (according to the&#xA;documentation&#xA;&lt;a href=&#34;https://docs.mattermost.com/developer/webhooks-incoming.html#slack-compatibility&#34; &#xA;  &#xA;   target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34; &#xA;&gt;here&lt;/a&gt;),&#xA;and Alertmanager natively supports Slack with a &lt;code&gt;slack_config&lt;/code&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Graphing SNMP data with Prometheus and Grafana</title>
-      <link>https://taylorfahlman.com/posts/old/2017/graphing_snmp_data_with_prometheus_and_grafana/</link>
+      <link>http://localhost:1313/posts/old/2017/graphing_snmp_data_with_prometheus_and_grafana/</link>
       <pubDate>Fri, 04 Aug 2017 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2017/graphing_snmp_data_with_prometheus_and_grafana/</guid>
+      <guid>http://localhost:1313/posts/old/2017/graphing_snmp_data_with_prometheus_and_grafana/</guid>
       <description>&lt;h1 id=&#34;graphing-snmp-data-with-prometheus-and-grafana&#34;&gt;Graphing SNMP data with Prometheus and Grafana&lt;/h1&gt;&#xA;&lt;p&gt;This summer, I&#39;ve been an intern on the Infrastructure team at CoreOS,&#xA;and this week marks the halfway point. I&#39;ve been learning lots and&#xA;doing some really interesting work. My latest project revolves around&#xA;getting some metrics about the office network set up, using SNMP,&#xA;Prometheus and Grafana.&lt;/p&gt;&#xA;&lt;h2 id=&#34;snmp&#34;&gt;SNMP&lt;/h2&gt;&#xA;&lt;p&gt;The first step was learning about SNMP. For those of you who haven&#39;t&#xA;heard of SNMP before, it&#39;s a protocol that came about in the late&#xA;80&#39;s, used for getting and modifying information about a managed&#xA;device. It uses OIDs, which are allocated to different organizations,&#xA;such as Cisco, who then in turn define their subset of OIDs in a MIB,&#xA;which SNMP uses to know how to parse the information. Here&#39;s an example&#xA;of a request to a host with some OID&lt;/p&gt;</description>
     </item>
     <item>
       <title>Travis and SFML</title>
-      <link>https://taylorfahlman.com/posts/old/2017/travis_and_sfml/</link>
+      <link>http://localhost:1313/posts/old/2017/travis_and_sfml/</link>
       <pubDate>Fri, 12 May 2017 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2017/travis_and_sfml/</guid>
+      <guid>http://localhost:1313/posts/old/2017/travis_and_sfml/</guid>
       <description>&lt;p&gt;I currently work at the &lt;a href=&#34;https://osuosl.org&#34; &#xA;  &#xA;   target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34; &#xA;&gt;Open Source Lab&lt;/a&gt; as a&#xA;Student System Admin, and will soon be interning on the Infrastructure&#xA;team at &lt;a href=&#34;https://coreos.com/&#34; &#xA;  &#xA;   target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34; &#xA;&gt;CoreOS&lt;/a&gt; . So I like automating things,&#xA;especially testing and building. One of the more annoying things about&#xA;using a framework like SFML is that there is not a lot of documentation&#xA;on testing them. Don&#39;t get me wrong, I&#39;m really loving SFML and its&#xA;community, especially the IRC channel. But in asking if anyone there&#xA;used anything like Travis to automate their builds, there were only a&#xA;few that did, and even then, it was all hacked together and not easily&#xA;replicable.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Animation</title>
-      <link>https://taylorfahlman.com/posts/old/2016/animation/</link>
+      <link>http://localhost:1313/posts/old/2016/animation/</link>
       <pubDate>Mon, 19 Dec 2016 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2016/animation/</guid>
+      <guid>http://localhost:1313/posts/old/2016/animation/</guid>
       <description>&lt;p&gt;An animation handler is decently hard to write, especially when working&#xA;with objects instead of directly with sprites, so I opted to use the&#xA;Thor library. It has some great tools and tutorials. I think I&#39;ll also&#xA;use the action handling component of Thor in the future, but for now&#xA;I&#39;m just using the Animation component.&lt;/p&gt;&#xA;&lt;p&gt;Before this, I manually moved the sprite&#39;s position every time I&#xA;pressed an arrow key. It looked something like&lt;/p&gt;</description>
     </item>
     <item>
       <title>Sprite Rendering and State Handling</title>
-      <link>https://taylorfahlman.com/posts/old/2016/sprite_rendering_and_state_handling/</link>
+      <link>http://localhost:1313/posts/old/2016/sprite_rendering_and_state_handling/</link>
       <pubDate>Mon, 12 Dec 2016 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2016/sprite_rendering_and_state_handling/</guid>
+      <guid>http://localhost:1313/posts/old/2016/sprite_rendering_and_state_handling/</guid>
       <description>&lt;h1 id=&#34;sprite-rendering-and-state-handling&#34;&gt;Sprite Rendering and State Handling&lt;/h1&gt;&#xA;&lt;p&gt;After a long hiatus (thanks to a 19 credit term), I&#39;m back to working&#xA;on the game. Textures and sprites now can be loaded and drawn pretty&#xA;easily. Chaning between the states is now smoothly handled after I&#xA;removed a bug. Now I can start the game in a menu, click on a button,&#xA;transition to the &#39;gameplay&#39; and render a sprite that changes when&#xA;pressing the direction keys.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Rust Syntax Highlighting in Vim</title>
-      <link>https://taylorfahlman.com/posts/old/2015/rust_syntax_highlighting_in_vim/</link>
+      <link>http://localhost:1313/posts/old/2015/rust_syntax_highlighting_in_vim/</link>
       <pubDate>Fri, 20 Nov 2015 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2015/rust_syntax_highlighting_in_vim/</guid>
+      <guid>http://localhost:1313/posts/old/2015/rust_syntax_highlighting_in_vim/</guid>
       <description>&lt;p&gt;I use Vim on a daily basis, and now that I&#39;m learning Rust, I wanted&#xA;syntax highlighting. There are some great tools out there, but the&#xA;instructions to get them to work are broken up a bit. Here are the best&#xA;instructions I found in one place.&lt;/p&gt;&#xA;&lt;p&gt;First, you&#39;ll need &lt;a href=&#34;https://github.com/VundleVim/Vundle.vim&#34; &#xA;  &#xA;   target=&#34;_blank&#34; rel=&#34;noreferrer noopener&#34; &#xA;&gt;Vundle&lt;/a&gt; if&#xA;you don&#39;t have it. Vundle is a great tool for Vim, managing plugins and&#xA;making them configurable in your &lt;code&gt;.vimrc&lt;/code&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Enable Rust on OSU Servers</title>
-      <link>https://taylorfahlman.com/posts/old/2015/enable_rust_on_osu_servers/</link>
+      <link>http://localhost:1313/posts/old/2015/enable_rust_on_osu_servers/</link>
       <pubDate>Tue, 17 Nov 2015 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2015/enable_rust_on_osu_servers/</guid>
+      <guid>http://localhost:1313/posts/old/2015/enable_rust_on_osu_servers/</guid>
       <description>&lt;p&gt;Rust was recently installed on flip{1-3} at Oregon State. In order to&#xA;use it, you must first add the path to the library to your&#xA;LD_LIBRARY_PATH:&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;export LD_LIBRARY_PATH=/usr/local/apps/rust/lib:$LD_LIBRARY_PATH&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;Now add the Rust binary directory path to your $PATH. This is needed&#xA;for cargo to work:&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;export PATH=$PATH:/usr/local/apps/rust-1.4.0/bin/&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;Now you just need to alias rustc and cargo to the full paths:&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;alias rustc=&amp;quot;/usr/local/apps/rust-1.4.0/bin/rustc&amp;quot;&#xA;alias cargo=&amp;quot;/usr/local/apps/rust-1.4.0/bin/cargo&amp;quot;&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;Happy Rusting&lt;/p&gt;</description>
     </item>
     <item>
       <title>Useful OpenSSL Commands</title>
-      <link>https://taylorfahlman.com/posts/old/2015/useful_ssl_openssl_commands/</link>
+      <link>http://localhost:1313/posts/old/2015/useful_ssl_openssl_commands/</link>
       <pubDate>Fri, 18 Sep 2015 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/posts/old/2015/useful_ssl_openssl_commands/</guid>
+      <guid>http://localhost:1313/posts/old/2015/useful_ssl_openssl_commands/</guid>
       <description>&lt;p&gt;Here a few useful commands I found when working with certs lately&lt;/p&gt;&#xA;&lt;p&gt;Covert a pfx file into a pem:&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;openssl pkcs12 -in foo.pfx -out foo.pem -nodes&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;Extract the key out of a pem:&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;openssl pkey -in foo.pem -out foo.key&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;Extrct CA cert chain out of a pem:&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;openssl crl2pkcs7 -nocrl -certfile foo.pem | openssl pkcs7 -print_certs -out foo.chain.crt&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;p&gt;Extract cert out of a pem:&lt;/p&gt;&#xA;&lt;pre&gt;&lt;code&gt;openssl x509 -in foo.pem -outform DER -out foo.crt&#xA;&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     <item>
       <title></title>
-      <link>https://taylorfahlman.com/resume/</link>
+      <link>http://localhost:1313/resume/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/resume/</guid>
+      <guid>http://localhost:1313/resume/</guid>
       <description>&lt;center&gt;&lt;embed src=&#34;https://drive.google.com/viewerng/&#xA;viewer?embedded=true&amp;url=https://fahlman.dev/resume/resume.pdf&#34; width=&#34;818&#34; height=&#34;800&#34;&gt;&lt;/center&gt;</description>
     </item>
     <item>
       <title>About Me</title>
-      <link>https://taylorfahlman.com/about/</link>
+      <link>http://localhost:1313/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://taylorfahlman.com/about/</guid>
+      <guid>http://localhost:1313/about/</guid>
       <description>&lt;p&gt;CTO at Axon Data.&lt;/p&gt;</description>
     </item>
   </channel>

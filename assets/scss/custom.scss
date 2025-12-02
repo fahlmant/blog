@@ -20,6 +20,7 @@
   --footer-text: #9b9b9b;
   --post-title-color: #111;
   --pagination-title-color: #111;
+  --fancy-color: #9333ea;
 }
 
 [data-theme="dark"] {
@@ -41,6 +42,7 @@
   --footer-text: #a0a0a0;
   --post-title-color: #e4e4e4;
   --pagination-title-color: #e4e4e4;
+  --fancy-color: #c084fc;
 }
 
 // Apply dark mode colors
@@ -153,7 +155,8 @@ blockquote {
 
 // Keep the fancy class
 .fancy {
-  color: #f00530;
+  color: var(--fancy-color);
+  transition: color 0.3s ease;
 }
 
 // Post titles in lists
